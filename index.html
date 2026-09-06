@@ -1,0 +1,4521 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+:root{--blue:#1261d8;--blue2:#0b4bb3;--navy:#12233f;--ink:#182235;--muted:#718096;--bg:#f5f8fc;--card:#fff;--line:#e7edf5;--green:#159447;--orange:#f59e0b;--red:#dc3545;--shadow:0 10px 30px rgba(24,55,99,.08);--radius:20px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;min-height:100%;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink)}
+body{padding-bottom:76px}.app{max-width:520px;margin:0 auto;min-height:100vh}
+.header{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;padding:17px 20px;font-size:20px;font-weight:800;text-align:center;box-shadow:0 7px 22px rgba(18,97,216,.20);letter-spacing:-.2px}.header:before{content:"🚚";margin-right:8px}
+.content{padding:18px 16px 28px}.title,.page-title{font-size:23px;font-weight:800;letter-spacing:-.5px;margin:4px 0 17px}.title{text-align:left}
+.top-bar{display:flex;align-items:center;gap:12px;margin-bottom:18px}.top-bar .title{margin:0;flex:1}.back-button{width:42px;height:42px;padding:0;border-radius:14px;background:#fff;color:var(--navy);font-size:22px;font-weight:800;box-shadow:var(--shadow);cursor:pointer}
+.form-card,.month-header,.empty-card{background:var(--card);border:1px solid rgba(231,237,245,.9);border-radius:var(--radius);padding:17px;margin-bottom:13px;box-shadow:var(--shadow)}
+.form-card label,.form-label{display:block;font-size:13px;font-weight:750;color:#526074;margin:0 0 8px}.section-title{font-size:16px;font-weight:800;margin-bottom:13px}
+.input,.form-input,.form-card select,.form-card textarea{width:100%;border:1px solid #dce4ef;background:#f8fafc;color:var(--ink);padding:13px 14px;border-radius:14px;font-size:16px;outline:none;transition:.15s}.input:focus,.form-input:focus,.form-card select:focus,.form-card textarea:focus{border-color:#76a8ef;background:#fff;box-shadow:0 0 0 3px rgba(18,97,216,.10)}
+.note{min-height:105px;resize:vertical}.form-button,.save-button{width:100%;border-radius:14px;padding:14px 16px;background:linear-gradient(135deg,var(--blue),#2b74df);color:#fff;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 8px 18px rgba(18,97,216,.20)}.save-button{margin:4px 0 18px}
+.vehicle-card{position:relative;background:#fff;border:1px solid var(--line);border-radius:24px;padding:20px 18px;margin-bottom:16px;box-shadow:var(--shadow);cursor:pointer;overflow:hidden;display:grid;grid-template-columns:150px minmax(0,1fr) 42px;column-gap:20px;align-items:center;min-height:180px}.vehicle-card:before{content:"";display:none}
+.vehicle-photo{width:150px;height:150px;margin:0;background:linear-gradient(180deg,#eef5ff,#f9fbff);border-radius:20px;display:flex;align-items:center;justify-content:center;overflow:hidden}.vehicle-photo img{width:100%;height:100%;object-fit:contain;padding:8px 12px}.vehicle-illustration{width:92%;max-width:360px;filter:drop-shadow(0 9px 10px rgba(30,55,90,.16))}
+.vehicle-card > div:nth-child(2){min-width:0}.vehicle-name{font-size:22px;font-weight:800;color:#111827;margin:0 0 10px;line-height:1.15}.vehicle-km-label{font-size:14px;color:#718096;margin-bottom:4px}.vehicle-km{font-size:27px;font-weight:800;color:var(--blue);line-height:1.1;white-space:nowrap}.vehicle-meta{display:none}.vehicle-warning{position:absolute;right:58px;top:18px;font-size:31px;line-height:1}.vehicle-card::after{content:"›";font-size:44px;color:#718096;line-height:1;justify-self:end}.badge{display:none}
+.home-screen{min-height:calc(100vh - 56px)}.home-header{position:relative;background:linear-gradient(135deg,#1682ef,#1261d8);color:#fff;border-radius:0 0 34px 34px;padding:52px 24px 58px;text-align:center;box-shadow:0 10px 28px rgba(18,97,216,.18)}.home-header-title{font-size:36px;font-weight:850;letter-spacing:-.8px}.home-header-subtitle{font-size:21px;margin-top:10px;font-weight:500}.home-content{padding:36px 18px 40px}.home-section-title{font-size:25px;font-weight:850;margin:0 0 22px;color:#111827}.admin-button{position:absolute;right:24px;bottom:22px;width:auto;border:0;background:#fff;color:#1f2937;padding:10px 18px;border-radius:14px;font-size:16px;font-weight:800;box-shadow:0 4px 14px rgba(0,0,0,.12);cursor:pointer}.admin-button:active{transform:scale(.98)}
+.last-km{background:#eef5ff;border:1px solid #dbeaff;border-radius:15px;padding:13px 14px;margin-bottom:15px;color:#60708a;font-size:13px}.last-km strong{display:block;color:var(--blue);font-size:22px;margin-top:4px}.check-row{display:flex!important;align-items:center;gap:11px;margin:0!important;font-size:15px!important;color:var(--ink)!important}.check-row input{width:20px;height:20px;accent-color:var(--blue)}.hidden{display:none!important}.distance{text-align:center;color:var(--blue);font-size:17px;font-weight:800;margin-top:12px}
+.vehicle-header{display:flex;align-items:center;gap:12px;background:#fff;border-radius:18px;padding:14px 16px;margin-bottom:14px;box-shadow:var(--shadow)}.vehicle-icon-large{width:48px;height:48px;border-radius:15px;background:#eaf2ff;display:flex;align-items:center;justify-content:center;font-size:27px}.vehicle-title{font-size:18px;font-weight:800;color:var(--navy)}
+.vehicle-selector{display:flex;align-items:center;background:#fff;border:1px solid var(--line);border-radius:15px;padding:13px 14px;margin-bottom:14px;font-size:14px;font-weight:750;box-shadow:var(--shadow);color:var(--navy)}
+.month-header{padding:15px;margin-bottom:12px}.month-header>strong{display:block;font-size:18px;margin-bottom:4px}.month-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:13px}.month-stat{background:#f7f9fc;border-radius:15px;padding:11px 8px;text-align:center}.month-stat-icon{display:block;font-size:18px;margin-bottom:3px}.month-stat strong{display:block;font-size:17px;margin:0}.month-stat small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.new-trip-button{width:100%;border:0;border-radius:15px;padding:14px;margin-bottom:13px;font-size:14px;font-weight:800;cursor:pointer;background:#eaf2ff;color:var(--blue)}
+.trip-card{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:13px 14px;margin-bottom:10px;box-shadow:var(--shadow);cursor:pointer}.trip-date{width:44px;min-width:44px;text-align:center;border-right:1px solid var(--line);padding-right:9px}.trip-date strong{display:block;font-size:20px;color:var(--blue)}.trip-date span{display:block;font-size:10px;color:var(--muted);margin-top:1px}.trip-date small{display:block;font-size:9px;color:#9aa5b5;margin-top:1px}.trip-main{flex:1;min-width:0}.trip-km{font-size:15px;font-weight:800;margin-bottom:4px}.trip-info{font-size:13px;font-weight:700;color:var(--blue);margin-bottom:4px}.trip-details{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.trip-arrow{font-size:27px;color:#a2afc1;line-height:1}
+.detail-value{font-size:15px;font-weight:700}.detail-row{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}.detail-row:last-child{border-bottom:0;padding-bottom:0}.detail-row span{color:var(--muted)}.detail-note{font-size:14px;line-height:1.55;color:#4d5a6e}.loading{text-align:center;color:var(--muted);padding:25px}.empty-card{text-align:center;color:var(--muted);padding:30px 18px}
+.technical-card{display:flex;align-items:flex-start;gap:13px;background:#fff;border:1px solid var(--line);border-left:5px solid #27a05b;border-radius:18px;padding:15px;margin-bottom:11px;box-shadow:var(--shadow);cursor:pointer}.technical-card.status-orange{border-left-color:var(--orange)}.technical-card.status-red{border-left-color:var(--red)}.technical-card.status-gray{border-left-color:#aeb8c6}.technical-icon{width:43px;height:43px;min-width:43px;border-radius:13px;background:#eaf8ef;display:flex;align-items:center;justify-content:center;font-size:21px}.status-orange .technical-icon{background:#fff6df}.status-red .technical-icon{background:#fff0f1}.status-gray .technical-icon{background:#f0f3f6}.technical-info{flex:1;min-width:0}.technical-title{font-size:15px;font-weight:800}.technical-value{font-size:13px;font-weight:700;margin-top:4px}.technical-sub{font-size:11px;color:var(--muted);margin-top:4px}.technical-status{font-size:11px;font-weight:750;color:var(--green);margin-top:6px}.status-orange .technical-status{color:#b76b00}.status-red .technical-status{color:var(--red)}.status-gray .technical-status{color:#7b8798}
+.admin-menu{display:grid;gap:10px}.admin-menu .form-button{text-align:left;padding:17px}.bottom-nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);z-index:50;width:min(520px,100%);height:68px;background:rgba(255,255,255,.97);backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;box-shadow:0 -8px 25px rgba(24,55,99,.08)}.bottom-nav button{flex:1;margin:7px 4px;border:1px solid #dce4ef;border-radius:14px;background:#f5f8fc;color:#64748b;font-size:10px;font-weight:800;cursor:pointer;box-shadow:0 3px 9px rgba(24,55,99,.08);transition:.15s}.bottom-nav button span{display:block;font-size:20px;margin-bottom:2px}.bottom-nav button.active{color:var(--blue);background:#eaf2ff;border-color:#a9c9f5;box-shadow:0 4px 12px rgba(18,97,216,.16)}.bottom-nav button:active{transform:scale(.97)}.nav-warning{display:none;margin-left:4px;font-size:13px;vertical-align:middle;animation:navWarn 1.4s ease-in-out infinite}.nav-warning.show{display:inline-block}@keyframes navWarn{0%,100%{opacity:1}50%{opacity:.45}}
+@media(min-width:760px){body{background:linear-gradient(135deg,#eef3f9,#f8fafc)}.app{max-width:900px}.header{border-radius:0 0 22px 22px}.content{padding:24px 24px 35px}.vehicle-card{grid-template-columns:250px minmax(0,1fr) 50px;column-gap:24px;padding:18px;min-height:190px}.vehicle-photo{width:250px;height:155px}.vehicle-name{font-size:23px}.vehicle-km{font-size:29px}.vehicle-warning{right:72px}.bottom-nav{max-width:900px}.home-content{padding-left:28px;padding-right:28px}.home-header{padding-top:46px;padding-bottom:60px}}
+
+@media(max-width:759px){.vehicle-card{grid-template-columns:104px minmax(0,1fr) 28px;column-gap:14px;min-height:148px;padding:16px 14px}.vehicle-photo{width:104px;height:104px;border-radius:17px}.vehicle-name{font-size:21px}.vehicle-km-label{font-size:13px}.vehicle-km{font-size:25px}.vehicle-warning{right:43px;top:14px;font-size:28px}.vehicle-card::after{font-size:38px}.home-header-title{font-size:32px}.home-header-subtitle{font-size:19px}.home-content{padding:28px 14px 35px}.home-section-title{font-size:23px;margin-bottom:18px}.admin-button{right:18px;bottom:18px;padding:8px 15px;font-size:14px}}
+
+
+.admin-technical-menu-button #adminTechnicalWarning,
+.admin-service-menu-button #adminServiceWarning{
+  position:absolute;
+  right:14px;
+  left:auto;
+  top:50%;
+  transform:translateY(-50%);
+  z-index:10;
+}
+
+</style>
+<style id="technical-warning-overlay">
+.bottom-nav #navState{position:relative!important;overflow:visible!important}
+.bottom-nav #navState::after{
+ content:"⚠️";position:absolute;top:-7px;right:-5px;
+ display:none!important;width:24px;height:24px;font-size:20px;
+ line-height:24px;z-index:9999;pointer-events:none
+}
+.bottom-nav #navState.warning-active::after{
+ display:block!important;
+ animation:technicalWarningBlink .8s steps(2,start) infinite
+}
+@keyframes technicalWarningBlink{50%{opacity:0;transform:scale(1.2)}}
+</style>
+
+<style id="modern-trips-overview">
+.trips-page{
+  padding:0 0 34px;
+  background:linear-gradient(180deg,#f7faff 0%,#eef4fb 100%);
+}
+.trips-hero{
+  margin:0 -16px 18px;
+  padding:25px 20px 28px;
+  background:linear-gradient(135deg,#1682ef 0%,#1261d8 58%,#0b4bb3 100%);
+  color:#fff;
+  border-radius:0 0 30px 30px;
+  box-shadow:0 10px 28px rgba(18,97,216,.20);
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+}
+.trips-hero-title{display:flex;align-items:center;gap:13px;min-width:0}
+.trips-hero-icon{
+  width:52px;height:52px;border-radius:16px;
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:27px;flex:0 0 auto;
+}
+.trips-title{font-size:28px;font-weight:850;letter-spacing:-.7px;line-height:1.1}
+.trips-subtitle{font-size:12px;opacity:.86;margin-top:6px;font-weight:500}
+.trips-current-month{
+  font-size:15px;font-weight:800;white-space:nowrap;
+  padding-top:8px;text-align:right;
+}
+.trips-vehicle-card{
+  margin:0 0 18px;
+  min-height:92px;
+  padding:14px 16px;
+  background:#fff;
+  border:1px solid rgba(231,237,245,.95);
+  border-radius:22px;
+  box-shadow:0 10px 30px rgba(24,55,99,.09);
+  display:flex;align-items:center;gap:14px;
+}
+.trips-vehicle-icon{
+  width:62px;height:62px;border-radius:18px;
+  background:#eef5ff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:34px;flex:0 0 auto;
+}
+.trips-vehicle-text{min-width:0}
+.trips-vehicle-name{font-size:19px;font-weight:850;color:#12233f;line-height:1.2}
+.trips-vehicle-action{font-size:12px;color:#718096;margin-top:5px}
+.trips-page .month-header{
+  padding:19px;
+  margin-bottom:15px;
+  border-radius:24px;
+  box-shadow:0 10px 30px rgba(24,55,99,.09);
+}
+.month-summary-heading{
+  display:flex;align-items:baseline;justify-content:space-between;
+  gap:10px;
+}
+.month-summary-heading strong{font-size:21px;letter-spacing:-.3px;color:#12233f}
+.month-summary-heading span{font-size:14px;color:#718096;white-space:nowrap}
+.trips-page .month-stats{gap:10px;margin-top:16px}
+.trips-page .month-stat{
+  min-height:104px;
+  border-radius:19px;
+  padding:15px 8px 12px;
+  background:#f7f9fc;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.trips-page .month-stat-icon{font-size:25px;margin-bottom:5px}
+.trips-page .month-stat strong{font-size:25px;color:#182235;line-height:1.05}
+.trips-page .month-stat small{font-size:11px;margin-top:5px}
+.trips-page .new-trip-button{
+  margin:0 0 18px;
+  min-height:60px;
+  border-radius:20px;
+  font-size:16px;
+  background:linear-gradient(135deg,#2b80ee,#1261d8);
+  color:#fff;
+  box-shadow:0 10px 22px rgba(18,97,216,.22);
+}
+.trips-page .trip-card{
+  min-height:94px;
+  margin-bottom:12px;
+  padding:14px 15px;
+  border-radius:21px;
+  box-shadow:0 10px 28px rgba(24,55,99,.08);
+  border:1px solid rgba(231,237,245,.95);
+}
+.trips-page .trip-date{width:55px;min-width:55px;padding-right:11px}
+.trips-page .trip-date strong{font-size:25px}
+.trips-page .trip-date span{font-size:10px;font-weight:750}
+.trips-page .trip-date small{font-size:10px}
+.trips-page .trip-info{font-size:17px;font-weight:850;margin:0;color:#1261d8}
+.trips-page .trip-arrow{font-size:34px;color:#9aa8bb}
+.trips-empty{
+  border-radius:21px;
+  box-shadow:0 10px 28px rgba(24,55,99,.08);
+}
+@media(max-width:380px){
+  .trips-title{font-size:25px}
+  .trips-current-month{font-size:14px}
+  .trips-hero{padding-left:16px;padding-right:16px}
+  .trips-page .month-stat strong{font-size:22px}
+}
+</style>
+
+
+
+<style id="summary-modern-icons">
+.trips-page .ref-icon{
+  width:56px!important;height:56px!important;border-radius:50%!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  position:relative!important;box-sizing:border-box!important;border:0!important;
+}
+.trips-page .ref-road{background:#e3efff!important;color:#1267d8!important}
+.trips-page .ref-map{background:#e2f6ea!important;color:#10a957!important}
+.trips-page .ref-fuel{background:#ffe4e7!important;color:#f01827!important}
+.trips-page .ref-adblue{background:#e7f2ff!important;color:#1677d8!important}
+.trips-page .ref-chart{background:#fff0d2!important;color:#eda300!important}
+.trips-page .summary-svg{
+  width:39px!important;height:39px!important;
+  display:block!important;
+}
+</style>
+
+
+<style id="new-trip-modern-style">
+.new-trip-modern{padding-top:0!important;}
+.new-trip-hero{position:relative;margin:-16px -16px 16px;padding:30px 22px 28px;background:linear-gradient(135deg,#1976ed,#0754bd);color:#fff;border-radius:0 0 28px 28px;overflow:hidden;}
+.new-trip-hero:after{content:"";position:absolute;width:360px;height:180px;right:-120px;top:-100px;background:rgba(255,255,255,.08);border-radius:50%;transform:rotate(-25deg);}
+.new-trip-hero-title{position:relative;z-index:1;font-size:30px;font-weight:850;letter-spacing:-.5px;}
+.new-trip-hero-subtitle{position:relative;z-index:1;margin-top:4px;font-size:15px;opacity:.82;}
+.new-trip-month{position:absolute;z-index:2;right:22px;top:36px;font-size:20px;font-weight:800;}
+.new-trip-vehicle-card{background:#fff;border:1px solid rgba(20,70,130,.08);border-radius:24px;padding:16px 18px;margin-bottom:14px;box-shadow:0 8px 24px rgba(34,74,125,.08);}
+.new-trip-label{font-size:13px;font-weight:750;color:#5d7090;margin-bottom:7px;}
+.new-trip-vehicle-row{display:flex;align-items:center;gap:14px;}
+.new-trip-vehicle-icon{width:86px;height:62px;display:flex;align-items:center;justify-content:center;font-size:48px;background:#f4f8fd;border-radius:18px;}
+.new-trip-vehicle-text{min-width:0;}
+.new-trip-vehicle-text .vehicle-title{font-size:20px;font-weight:850;color:#10203f;}
+.new-trip-vehicle-km{margin-top:5px;font-size:14px;color:#60769a;}
+.new-trip-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.new-trip-field{margin:0!important;display:flex;align-items:flex-start;gap:11px;padding:14px!important;border-radius:20px!important;min-width:0;}
+.new-trip-full{grid-column:1/-1;}
+.new-trip-icon{width:42px;min-width:42px;height:42px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:850;background:#e8f2ff;color:#1267d8;}
+.new-trip-icon.gray{background:#edf1f6;color:#596b88;}
+.new-trip-icon.red{background:#ffe9ec;color:#ed2635;}
+.new-trip-field-body{flex:1;min-width:0;}
+.new-trip-field-body>label:first-child{display:block;font-size:13px;font-weight:750;color:#5d7090;margin-bottom:5px;}
+.new-trip-field-body .input{margin:0!important;width:100%;box-sizing:border-box;}
+.new-trip-readonly{font-size:18px;font-weight:750;color:#60769a;padding:10px 0;}
+.new-trip-inline-inputs{display:flex;align-items:center;gap:5px;}
+.new-trip-inline-inputs .input{min-width:0;}
+.new-trip-switch-row{margin:0!important;padding:5px 0!important;font-size:13px!important;}
+.new-trip-subfield{margin-top:7px;}
+.new-trip-note-card textarea{min-height:88px;}
+.new-trip-save{margin-top:14px!important;border-radius:20px!important;font-size:17px!important;font-weight:850!important;padding:17px!important;box-shadow:0 10px 24px rgba(18,103,216,.22);}
+@media(max-width:600px){.new-trip-grid{grid-template-columns:1fr 1fr;gap:10px}.new-trip-hero-title{font-size:27px}.new-trip-month{font-size:17px;top:34px}.new-trip-vehicle-text .vehicle-title{font-size:17px}.new-trip-field{padding:12px!important}.new-trip-icon{width:38px;min-width:38px;height:38px;font-size:20px}.new-trip-field-body>label:first-child{font-size:12px}.new-trip-inline-inputs{gap:3px}.new-trip-inline-inputs .input{font-size:12px!important;padding:9px 6px!important}}
+</style>
+
+
+<style id="new-trip-summary-icons">
+.new-trip-modern .new-trip-icon.ref-new-road{background:#e3efff!important;color:#1267d8!important}
+.new-trip-modern .new-trip-icon.ref-new-map{background:#e2f6ea!important;color:#10a957!important}
+.new-trip-modern .new-trip-icon.ref-new-fuel{background:#ffe4e7!important;color:#f01827!important}
+.new-trip-modern .new-summary-svg{width:29px!important;height:29px!important;display:block!important}
+</style>
+
+
+<style id="modern-trip-detail">
+.trip-detail-page{padding:0 0 34px!important}
+.trip-detail-hero{
+  margin:0 -16px 16px;
+  padding:24px 20px 26px;
+  background:linear-gradient(135deg,#1682ef 0%,#1261d8 58%,#0b4bb3 100%);
+  color:#fff;border-radius:0 0 30px 30px;
+  box-shadow:0 10px 28px rgba(18,97,216,.20);
+}
+.trip-detail-title-row{display:flex;align-items:center;gap:13px}
+.trip-detail-back{
+  width:44px;height:44px;min-width:44px;border:1px solid rgba(255,255,255,.25);
+  border-radius:14px;background:rgba(255,255,255,.16);color:#fff;
+  font-size:22px;font-weight:800;cursor:pointer
+}
+.trip-detail-heading{font-size:27px;font-weight:850;letter-spacing:-.6px;line-height:1.1}
+.trip-detail-subtitle{font-size:12px;opacity:.84;margin-top:5px}
+.trip-detail-month{margin-top:17px;font-size:14px;font-weight:750;opacity:.9}
+.trip-detail-vehicle{
+  display:flex;align-items:center;gap:14px;
+  background:#fff;border:1px solid rgba(231,237,245,.95);
+  border-radius:22px;padding:14px 16px;margin-bottom:14px;
+  box-shadow:0 10px 30px rgba(24,55,99,.09)
+}
+.trip-detail-vehicle-icon{
+  width:58px;height:58px;border-radius:18px;background:#eef5ff;
+  display:flex;align-items:center;justify-content:center;font-size:31px
+}
+.trip-detail-vehicle-name{font-size:19px;font-weight:850;color:#12233f}
+.trip-detail-vehicle-label{font-size:12px;color:#718096;margin-top:4px}
+.trip-detail-card{
+  background:#fff;border:1px solid rgba(231,237,245,.95);
+  border-radius:22px;padding:17px;margin-bottom:13px;
+  box-shadow:0 10px 28px rgba(24,55,99,.08)
+}
+.trip-detail-card-title{display:flex;align-items:center;gap:10px;margin-bottom:13px}
+.trip-detail-card-icon{
+  width:42px;height:42px;border-radius:14px;background:#eaf2ff;color:#1267d8;
+  display:flex;align-items:center;justify-content:center;font-size:21px
+}
+.trip-detail-card-title strong{font-size:16px;font-weight:850;color:#12233f}
+.trip-detail-date{
+  font-size:18px;font-weight:800;color:#182235;
+  background:#f7f9fc;border-radius:15px;padding:13px 14px
+}
+.trip-detail-km-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.trip-detail-km{
+  background:#f7f9fc;border-radius:17px;padding:13px 10px;text-align:center
+}
+.trip-detail-km small{display:block;color:#718096;font-size:11px;margin-bottom:5px}
+.trip-detail-km strong{display:block;font-size:19px;color:#182235}
+.trip-detail-km.total{grid-column:1/-1;background:#eaf8ef}
+.trip-detail-km.total strong{font-size:25px;color:#159447}
+.trip-detail-info-row{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:12px 0;border-bottom:1px solid var(--line);font-size:14px
+}
+.trip-detail-info-row:last-child{border-bottom:0;padding-bottom:0}
+.trip-detail-info-row span{color:#718096}
+.trip-detail-info-row strong{text-align:right;color:#182235;font-size:15px}
+.trip-detail-note{
+  background:#f7f9fc;border-radius:16px;padding:14px;
+  color:#4d5a6e;font-size:14px;line-height:1.55;white-space:pre-wrap
+}
+.trip-detail-card.fuel .trip-detail-card-icon{background:#ffe9ec;color:#ed2635}
+.trip-detail-card.adblue .trip-detail-card-icon{background:#eaf2ff;color:#1267d8}
+@media(max-width:380px){
+  .trip-detail-heading{font-size:24px}
+  .trip-detail-card{padding:15px}
+}
+</style>
+
+
+<style id="detail-month-right">
+/* Měsíc v Detailu jízdy je zarovnaný vpravo, stejně jako v ostatních obrazovkách. */
+.trip-detail-hero .trip-detail-month{
+  text-align:right;
+  margin-left:auto;
+  margin-top:10px;
+  width:100%;
+  display:block;
+}
+</style>
+
+<style id="new-trip-modern-icon-types">
+.new-trip-modern .new-trip-icon.ref-new-calendar,
+.new-trip-modern .new-trip-icon.ref-new-odometer,
+.new-trip-modern .new-trip-icon.ref-new-purpose,
+.new-trip-modern .new-trip-icon.ref-new-card,
+.new-trip-modern .new-trip-icon.ref-new-note{
+  background:#e8f2ff!important;color:#1267d8!important;
+}
+.new-trip-modern .new-trip-icon.ref-new-adblue{
+  background:#e2f0ff!important;color:#1677d8!important;
+}
+</style>
+<style id="unified-trip-icons">
+/* Stejné ikonky jako v Nové jízdě, pouze v kontejnerech dané obrazovky. */
+.trips-page .ref-road,
+.trips-page .ref-map,
+.trips-page .ref-chart,
+.trips-page .ref-fuel,
+.trips-page .ref-adblue{
+  display:flex;align-items:center;justify-content:center;
+}
+.trip-detail-card-icon .new-summary-svg,
+.trips-page .summary-svg{
+  width:30px;height:30px;
+}
+.trip-detail-card-icon .new-summary-svg{
+  width:23px;height:23px;
+}
+.trips-page .ref-adblue{
+  background:#e2f0ff!important;color:#1677d8!important;
+}
+</style>
+
+<style id="modern-technical-status">
+.technical-page{padding:0 0 34px!important}
+.technical-hero{
+  margin:0 -16px 16px;
+  padding:22px 20px 24px;
+  background:linear-gradient(135deg,#1682ef 0%,#1261d8 58%,#0b4bb3 100%);
+  color:#fff;border-radius:0 0 30px 30px;
+  box-shadow:0 10px 28px rgba(18,97,216,.20)
+}
+.technical-title-row{display:flex;align-items:center;gap:13px}
+.technical-back{
+  width:44px;height:44px;min-width:44px;border:1px solid rgba(255,255,255,.25);
+  border-radius:14px;background:rgba(255,255,255,.16);color:#fff;
+  font-size:22px;font-weight:800;cursor:pointer
+}
+.technical-heading{font-size:27px;font-weight:850;letter-spacing:-.6px;line-height:1.1}
+.technical-subtitle{font-size:12px;opacity:.84;margin-top:5px}
+.technical-vehicle{
+  display:flex;align-items:center;gap:14px;
+  background:#fff;border:1px solid rgba(231,237,245,.95);
+  border-radius:22px;padding:14px 16px;margin-bottom:14px;
+  box-shadow:0 10px 30px rgba(24,55,99,.09)
+}
+.technical-vehicle-icon{
+  width:58px;height:58px;border-radius:18px;background:#eef5ff;
+  display:flex;align-items:center;justify-content:center;color:#1267d8
+}
+.technical-vehicle-icon svg{width:34px;height:34px}
+.technical-vehicle-name{font-size:19px;font-weight:850;color:#12233f}
+.technical-vehicle-label{font-size:12px;color:#718096;margin-top:4px}
+.technical-card{
+  display:flex;align-items:flex-start;gap:13px;
+  background:#fff;border:1px solid rgba(231,237,245,.95)!important;
+  border-left:5px solid #27a05b!important;border-radius:20px!important;
+  padding:15px!important;margin-bottom:11px;
+  box-shadow:0 10px 28px rgba(24,55,99,.08)!important;
+  cursor:pointer
+}
+.technical-card.status-orange{border-left-color:#f0a21a!important}
+.technical-card.status-red{border-left-color:#ed2635!important}
+.technical-card.status-gray{border-left-color:#aeb8c6!important}
+.technical-icon{
+  width:46px!important;height:46px!important;min-width:46px!important;
+  border-radius:14px!important;background:#eaf2ff!important;
+  display:flex;align-items:center;justify-content:center;
+  color:#1267d8;font-size:21px
+}
+.technical-icon svg{width:28px;height:28px}
+.status-orange .technical-icon{background:#fff6df!important;color:#d88900}
+.status-red .technical-icon{background:#fff0f1!important;color:#ed2635}
+.status-gray .technical-icon{background:#f0f3f6!important;color:#7b8798}
+.technical-title{font-size:15px;font-weight:800;color:#12233f}
+.technical-value{font-size:14px;font-weight:750;margin-top:4px;color:#26354c}
+.technical-sub{font-size:11px;color:#718096;margin-top:5px}
+.technical-status{font-size:11px;font-weight:750;color:#159447;margin-top:7px}
+.status-orange .technical-status{color:#b76b00}
+.status-red .technical-status{color:#ed2635}
+.status-gray .technical-status{color:#7b8798}
+</style>
+
+
+<style id="shared-blue-hero">
+/* Sjednocený horní panel pro Novou jízdu / Přehled / Detail / Technický stav */
+.trips-page .trips-hero,
+.trip-detail-page .trip-detail-hero,
+.technical-page .technical-hero{
+  background:linear-gradient(135deg,#1682ef 0%,#1261d8 58%,#0b4bb3 100%)!important;
+  color:#fff!important;
+  border-radius:0 0 30px 30px!important;
+  box-shadow:0 10px 28px rgba(18,97,216,.20)!important;
+}
+
+/* Stejný vzhled názvu a doprovodného textu jako v Nové jízdě. */
+.trips-page .trips-hero,
+.trip-detail-page .trip-detail-hero,
+.technical-page .technical-hero{
+  padding-top:22px!important;
+  padding-bottom:24px!important;
+}
+
+.trips-page .trips-heading,
+.trip-detail-page .trip-detail-heading,
+.technical-page .technical-heading{
+  color:#fff!important;
+  font-weight:850!important;
+}
+
+.trips-page .trips-subtitle,
+.trip-detail-page .trip-detail-subtitle,
+.technical-page .technical-subtitle{
+  color:#fff!important;
+  opacity:.84!important;
+}
+
+/* Měsíc zůstává ve stejné pozici jako v Nové jízdě. */
+.trip-detail-page .trip-detail-month{
+  color:#fff!important;
+}
+</style>
+
+
+<style id="same-new-trip-hero">
+.trips-page .trips-hero,
+.trip-detail-page .trip-detail-hero,
+.technical-page .technical-hero{
+  position:relative!important;
+  margin:-16px -16px 16px!important;
+  padding:30px 22px 28px!important;
+  background:linear-gradient(135deg,#1976ed,#0754bd)!important;
+  color:#fff!important;
+  border-radius:0 0 28px 28px!important;
+  overflow:hidden!important;
+  box-shadow:none!important;
+}
+.trips-page .trips-hero:after,
+.trip-detail-page .trip-detail-hero:after,
+.technical-page .technical-hero:after{
+  content:""!important;
+  position:absolute!important;
+  width:360px!important;
+  height:180px!important;
+  right:-120px!important;
+  top:-100px!important;
+  background:rgba(255,255,255,.08)!important;
+  border-radius:50%!important;
+  transform:rotate(-25deg)!important;
+}
+.trips-page .trips-hero-title,
+.trip-detail-page .trip-detail-title-row,
+.technical-page .technical-title-row{
+  position:relative!important;
+  z-index:1!important;
+}
+.trips-page .trips-title,
+.trip-detail-page .trip-detail-heading,
+.technical-page .technical-heading{
+  font-size:30px!important;
+  font-weight:850!important;
+  letter-spacing:-.5px!important;
+  line-height:1.1!important;
+  color:#fff!important;
+}
+.trips-page .trips-subtitle,
+.trip-detail-page .trip-detail-subtitle,
+.technical-page .technical-subtitle{
+  position:relative!important;
+  z-index:1!important;
+  margin-top:4px!important;
+  font-size:15px!important;
+  opacity:.82!important;
+  color:#fff!important;
+}
+.trips-page .trips-current-month,
+.trip-detail-page .trip-detail-month,
+.technical-page .technical-month{
+  position:absolute!important;
+  z-index:2!important;
+  right:22px!important;
+  top:36px!important;
+  margin:0!important;
+  font-size:20px!important;
+  font-weight:800!important;
+  color:#fff!important;
+  text-align:right!important;
+}
+</style>
+
+<style id="modern-service-screen">
+.service-page{padding:0 0 34px!important}
+.service-hero{
+  position:relative!important;
+  margin:-16px -16px 16px!important;
+  padding:30px 22px 28px!important;
+  background:linear-gradient(135deg,#1976ed,#0754bd)!important;
+  color:#fff!important;
+  border-radius:0 0 28px 28px!important;
+  overflow:hidden!important;
+  box-shadow:none!important;
+}
+.service-hero:after{
+  content:""!important;
+  position:absolute!important;
+  width:360px!important;height:180px!important;
+  right:-120px!important;top:-100px!important;
+  background:rgba(255,255,255,.08)!important;
+  border-radius:50%!important;
+  transform:rotate(-25deg)!important;
+}
+.service-hero-title{
+  position:relative;z-index:1;display:flex;align-items:center;gap:13px
+}
+.service-hero-icon{
+  width:48px;height:48px;border-radius:15px;
+  background:rgba(255,255,255,.16);
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px
+}
+.service-title{
+  font-size:30px;font-weight:850;letter-spacing:-.5px;line-height:1.1
+}
+.service-subtitle{font-size:15px;opacity:.82;margin-top:4px}
+.service-vehicle-card{
+  display:flex;align-items:center;gap:14px;
+  background:#fff;border:1px solid #e7edf5;
+  border-radius:22px;padding:14px 16px;margin-bottom:14px;
+  box-shadow:0 10px 30px rgba(24,55,99,.09)
+}
+.service-vehicle-icon{
+  width:58px;height:58px;border-radius:18px;
+  background:#eef5ff;display:flex;align-items:center;
+  justify-content:center;color:#1267d8;font-size:29px
+}
+.service-vehicle-name{font-size:19px;font-weight:850;color:#12233f}
+.service-vehicle-label{font-size:12px;color:#718096;margin-top:4px}
+.service-page .form-card{
+  background:#fff!important;
+  border:1px solid #e7edf5!important;
+  border-radius:20px!important;
+  padding:16px!important;
+  margin-bottom:12px!important;
+  box-shadow:0 10px 28px rgba(24,55,99,.08)!important
+}
+.service-page .section-title{
+  display:flex;align-items:center;gap:10px;
+  color:#12233f!important;font-size:16px!important;
+  font-weight:850!important;margin-bottom:12px!important
+}
+.service-page .form-label{color:#56677e!important;font-weight:700!important}
+.service-page .input{
+  border:1px solid #dce5f0!important;
+  border-radius:14px!important;
+  background:#f8fafc!important;
+  box-sizing:border-box
+}
+.service-page textarea.input{min-height:130px!important}
+.service-page .form-hint{color:#8491a3!important;font-size:12px!important;margin-top:7px}
+.service-page .save-button{
+  width:100%!important;border:0!important;
+  border-radius:16px!important;
+  background:linear-gradient(135deg,#1976ed,#0754bd)!important;
+  box-shadow:0 9px 20px rgba(18,97,216,.22)!important;
+  font-weight:850!important
+}
+</style>
+
+
+<style id="service-month-right">
+.service-hero .service-month{
+  position:absolute;
+  z-index:2;
+  right:22px;
+  top:36px;
+  margin:0;
+  font-size:20px;
+  font-weight:800;
+  color:#fff;
+  text-align:right;
+}
+</style>
+
+<style id="service-photo-buttons">
+.service-photo-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.service-photo-button{min-height:58px;border:1px solid #dce7f4;border-radius:16px;background:#f7faff;color:#1267d8;display:flex;align-items:center;justify-content:center;gap:9px;font-size:14px;font-weight:800;cursor:pointer}
+.service-photo-button:active{transform:scale(.98);background:#edf5ff}
+.service-photo-button-icon{width:30px;height:30px;border-radius:10px;background:#e5f0ff;display:flex;align-items:center;justify-content:center;font-size:17px}
+</style>
+<style id="service-driver-style">
+.driver-name-field{margin-bottom:14px}
+.driver-name-field .input{
+  width:100%;
+  box-sizing:border-box;
+  border:1px solid #dce5f0!important;
+  border-radius:14px!important;
+  background:#f8fafc!important;
+  padding:13px 14px!important;
+  font-size:14px;
+}
+</style>
+
+<style id="nav-more-css">
+.nav-more{
+  flex:1;
+  position:relative;
+  margin:7px 4px;
+  min-width:0;
+}
+.nav-more summary{
+  list-style:none;
+  height:100%;
+  border:1px solid #dce4ef;
+  border-radius:14px;
+  background:#f5f8fc;
+  color:#64748b;
+  font-size:10px;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 3px 9px rgba(24,55,99,.08);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  line-height:1.1;
+}
+.nav-more summary::-webkit-details-marker{display:none}
+.nav-more summary span{
+  display:block;
+  font-size:20px;
+  margin-bottom:2px;
+}
+.nav-more[open] summary{
+  color:var(--blue);
+  background:#eaf2ff;
+  border-color:#a9c9f5;
+}
+.nav-more-menu{
+  position:absolute;
+  right:0;
+  bottom:76px;
+  width:220px;
+  padding:8px;
+  background:rgba(255,255,255,.98);
+  border:1px solid #dce5f0;
+  border-radius:18px;
+  box-shadow:0 14px 35px rgba(24,55,99,.18);
+}
+.nav-more-menu button{
+  width:100%;
+  min-height:52px;
+  border:0;
+  border-radius:13px;
+  background:#f5f8fc;
+  color:#12233f;
+  font-size:14px;
+  font-weight:800;
+  text-align:left;
+  padding:10px 14px;
+  cursor:pointer;
+}
+.nav-more-menu button:active{background:#eaf2ff}
+</style>
+
+<style id="admin-login-modern-style">
+/* Moderní vzhled přihlášení administrátora */
+.admin-login-modern,
+.admin-login-card{
+  border-radius:22px!important;
+  background:#fff!important;
+  box-shadow:0 12px 32px rgba(24,55,99,.12)!important;
+  border:1px solid #e3eaf3!important;
+}
+.admin-login-modern .login-header,
+.admin-login-card .login-header{
+  background:linear-gradient(135deg,#1677e8,#0d5fcb)!important;
+  border-radius:20px 20px 0 0!important;
+  color:#fff!important;
+}
+.admin-login-modern input,
+.admin-login-card input{
+  border:1px solid #dce5f0!important;
+  border-radius:14px!important;
+  background:#f8fafc!important;
+  min-height:48px!important;
+  box-sizing:border-box!important;
+}
+.admin-login-modern input:focus,
+.admin-login-card input:focus{
+  outline:none!important;
+  border-color:#7db4f5!important;
+  background:#fff!important;
+  box-shadow:0 0 0 3px rgba(22,119,232,.10)!important;
+}
+.admin-login-modern button,
+.admin-login-card button{
+  border-radius:14px!important;
+  min-height:48px!important;
+  font-weight:800!important;
+}
+.admin-login-modern .login-icon,
+.admin-login-card .login-icon{
+  width:42px;
+  height:42px;
+  border-radius:13px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(255,255,255,.16);
+}
+</style>
+
+
+
+
+<style id="admin-panel-modern-style">
+.admin-panel-modern{
+  padding:0 0 24px;
+}
+.admin-panel-modern .new-trip-hero{
+  margin-bottom:14px;
+}
+.admin-panel-modern .form-card{
+  border-radius:18px!important;
+  border:1px solid #e2e9f2!important;
+  background:#fff!important;
+  box-shadow:0 8px 24px rgba(24,55,99,.09)!important;
+}
+.admin-panel-modern .form-card button{
+  border-radius:14px!important;
+}
+.admin-panel-modern .admin-section-title{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:16px;
+  font-weight:800;
+  color:#17345f;
+}
+.admin-panel-modern .admin-icon{
+  width:38px;
+  height:38px;
+  border-radius:12px;
+  background:#e8f2ff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:19px;
+}
+</style>
+
+
+<style id="admin-after-login-style">
+.admin-menu{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.admin-menu .form-button{
+  width:100%;
+  min-height:58px;
+  margin:0!important;
+  border-radius:20px!important;
+  font-size:15px!important;
+  font-weight:800!important;
+  box-shadow:0 8px 20px rgba(34,74,125,.08)!important;
+}
+</style>
+
+
+<style id="admin-logout-style">
+.new-trip-hero .admin-logout-button{
+  position:absolute;
+  z-index:2;
+  right:22px;
+  top:67px;
+  border:1px solid rgba(255,255,255,.38);
+  border-radius:12px;
+  background:rgba(255,255,255,.13);
+  color:#fff;
+  padding:8px 13px;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+  backdrop-filter:blur(4px);
+}
+.new-trip-hero .admin-logout-button:active{
+  background:rgba(255,255,255,.22);
+  transform:scale(.98);
+}
+</style>
+
+
+<style id="admin-vehicles-modern-style">
+.admin-hero-back{
+  position:absolute;
+  z-index:3;
+  left:20px;
+  top:28px;
+  width:42px;
+  height:42px;
+  border:0;
+  border-radius:14px;
+  background:rgba(255,255,255,.14);
+  color:#fff;
+  font-size:25px;
+  line-height:1;
+  cursor:pointer;
+}
+.admin-hero-back:active{
+  background:rgba(255,255,255,.24);
+  transform:scale(.97);
+}
+.admin-vehicles-list{
+  margin-top:2px;
+}
+.admin-vehicle-card{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  width:100%;
+  box-sizing:border-box;
+  margin-bottom:12px;
+  padding:15px;
+  background:#fff;
+  border:1px solid rgba(20,70,130,.08);
+  border-radius:22px;
+  box-shadow:0 8px 24px rgba(34,74,125,.08);
+  cursor:pointer;
+}
+.admin-vehicle-card:active{
+  transform:scale(.99);
+  background:#f8fbff;
+}
+.admin-vehicle-icon{
+  width:64px;
+  min-width:64px;
+  height:64px;
+  border-radius:18px;
+  background:#e8f2ff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:34px;
+}
+.admin-vehicle-info{
+  min-width:0;
+  flex:1;
+}
+.admin-vehicle-name{
+  font-size:18px;
+  font-weight:850;
+  color:#10203f;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.admin-vehicle-status{
+  margin-top:5px;
+  font-size:13px;
+  font-weight:750;
+  color:#60769a;
+}
+.admin-vehicle-detail{
+  margin-top:5px;
+  font-size:13px;
+  color:#71819a;
+}
+.admin-vehicle-edit{
+  width:38px;
+  height:38px;
+  min-width:38px;
+  border-radius:12px;
+  background:#e8f2ff;
+  color:#1267d8;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  font-weight:700;
+}
+</style>
+
+
+<style id="admin-vehicles-back-fix">
+.new-trip-hero{
+  position:relative!important;
+}
+.admin-hero-back{
+  left:18px!important;
+  top:18px!important;
+  width:40px!important;
+  height:40px!important;
+  z-index:10!important;
+}
+.new-trip-hero-title,
+.new-trip-hero-subtitle{
+  margin-left:62px!important;
+}
+</style>
+
+
+<style id="admin-vehicle-detail-edit-modern">
+.admin-vehicle-detail-page .admin-detail-card{
+  margin-bottom:14px;
+}
+.admin-detail-grid{
+  align-items:stretch;
+}
+.admin-detail-value{
+  font-size:16px;
+  font-weight:800;
+  color:#10203f;
+  padding-top:4px;
+}
+.admin-edit-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.admin-edit-field{
+  margin:0!important;
+}
+.admin-edit-full{
+  grid-column:1/-1;
+}
+.admin-edit-field .input{
+  margin:0!important;
+  width:100%;
+  box-sizing:border-box;
+}
+.admin-switch{
+  display:flex!important;
+  align-items:center;
+  gap:9px;
+  padding-top:5px;
+  color:#506786;
+  font-size:13px!important;
+  font-weight:650!important;
+}
+.admin-switch input{
+  width:20px;
+  height:20px;
+  accent-color:#1267d8;
+}
+.admin-edit-button{
+  width:100%;
+  margin-top:14px!important;
+}
+.admin-save-message{
+  margin-top:12px;
+  text-align:center;
+  color:#1267d8;
+  font-weight:700;
+}
+@media(max-width:600px){
+  .admin-edit-grid{
+    grid-template-columns:1fr;
+    gap:10px;
+  }
+  .admin-edit-full{
+    grid-column:auto;
+  }
+}
+</style>
+
+
+<style id="admin-fuel-cards-modern">
+.admin-fuel-cards-page{
+  padding-bottom:24px;
+}
+.admin-fuel-cards-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  margin-top:2px;
+}
+.admin-fuel-card{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  width:100%;
+  min-height:78px;
+  box-sizing:border-box;
+  padding:12px 14px;
+  border-radius:20px;
+  background:#fff;
+  border:1px solid rgba(20,70,130,.08);
+  box-shadow:0 8px 24px rgba(34,74,125,.08);
+}
+.admin-fuel-card-icon{
+  width:54px;
+  min-width:54px;
+  height:54px;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#e8f2ff;
+  font-size:27px;
+}
+.admin-fuel-card-info{
+  flex:1;
+  min-width:0;
+}
+.admin-fuel-card-name{
+  font-size:17px;
+  font-weight:850;
+  color:#10203f;
+}
+.admin-fuel-card-type{
+  margin-top:4px;
+  font-size:12px;
+  font-weight:650;
+  color:#70819b;
+}
+.admin-fuel-card-arrow{
+  width:36px;
+  height:36px;
+  border-radius:12px;
+  background:#e8f2ff;
+  color:#1267d8;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  font-weight:700;
+}
+</style>
+
+
+<style id="admin-fuel-cards-all-modern">
+.admin-fuel-cards-actions{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin:2px 0 16px;
+}
+.admin-fuel-cards-actions .form-button{
+  width:100%;
+  min-height:54px;
+  margin:0!important;
+  border-radius:18px!important;
+}
+.admin-sync-button{
+  background:#f4f8fd!important;
+  color:#1267d8!important;
+  border:1px solid #dbe7f5!important;
+}
+.admin-fuel-card{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  width:100%;
+  min-height:78px;
+  box-sizing:border-box;
+  padding:12px 14px;
+  margin-bottom:12px;
+  border-radius:20px;
+  background:#fff;
+  border:1px solid rgba(20,70,130,.08);
+  box-shadow:0 8px 24px rgba(34,74,125,.08);
+}
+.admin-fuel-card-icon{
+  width:54px!important;
+  min-width:54px!important;
+  height:54px!important;
+  border-radius:16px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:#e8f2ff!important;
+  color:#1267d8!important;
+  font-size:0!important;
+}
+.admin-fuel-card-icon svg{
+  width:31px!important;
+  height:31px!important;
+}
+.admin-fuel-card-info{
+  flex:1;
+  min-width:0;
+}
+.admin-fuel-card-name{
+  font-size:17px;
+  font-weight:850;
+  color:#10203f;
+}
+.admin-fuel-card-type{
+  margin-top:4px;
+  font-size:12px;
+  font-weight:650;
+  color:#70819b;
+}
+.admin-fuel-card-arrow{
+  width:36px;
+  height:36px;
+  border-radius:12px;
+  background:#e8f2ff;
+  color:#1267d8;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  font-weight:700;
+}
+</style>
+
+
+<style id="admin-fuel-cards-svg-fix">
+.admin-fuel-card-icon svg{
+  width:32px;
+  height:32px;
+  display:block;
+}
+</style>
+
+
+<style id="admin-fuel-sync-style">
+.admin-fuel-cards-actions{
+  margin:0 0 14px;
+}
+.admin-fuel-cards-actions .form-button{
+  width:100%;
+  min-height:54px;
+  margin:0!important;
+  border-radius:18px!important;
+}
+.admin-fuel-cards-actions .admin-sync-button{
+  background:#f4f8fd!important;
+  color:#1267d8!important;
+  border:1px solid #dbe7f5!important;
+}
+</style>
+
+
+<style id="admin-fuel-card-click-edit">
+.admin-fuel-card-clickable{
+  cursor:pointer;
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+.admin-fuel-card-clickable:active{
+  transform:scale(.985);
+}
+.admin-fuel-card-edit-page .admin-fuel-edit-card{
+  padding:14px;
+}
+.admin-fuel-card-edit-page .new-trip-field{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.admin-fuel-card-edit-page .new-trip-field-body{
+  flex:1;
+}
+.admin-fuel-card-edit-page .new-trip-field-body label:first-child{
+  display:block;
+  margin-bottom:6px;
+}
+</style>
+
+<style id="admin-technical-status-style">
+.admin-technical-page{padding-bottom:24px}
+.admin-technical-list{display:flex;flex-direction:column;gap:12px}
+.admin-technical-vehicle-card{padding:15px!important;margin:0!important;border-radius:20px!important;box-shadow:0 8px 24px rgba(34,74,125,.08)!important}
+.admin-technical-vehicle-head{display:flex;align-items:center;gap:12px}
+.admin-technical-vehicle-icon{width:58px;height:58px;min-width:58px;border-radius:18px;background:#e8f2ff;color:#1267d8;display:flex;align-items:center;justify-content:center}
+.admin-technical-vehicle-icon svg{width:34px;height:34px}
+.admin-technical-vehicle-info{min-width:0;flex:1}
+.admin-technical-vehicle-name{font-size:18px;font-weight:850;color:#10203f}
+.admin-technical-vehicle-sub{font-size:12px;color:#718096;margin-top:4px}
+.admin-technical-overall{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;background:#eaf8ef}
+.admin-technical-overall.status-orange{background:#fff6df}
+.admin-technical-overall.status-red{background:#fff0f1}
+.admin-technical-items{margin-top:13px;display:flex;flex-direction:column;gap:7px}
+.admin-technical-item{display:flex;align-items:center;gap:9px;padding:10px;border-radius:14px;background:#f7f9fc;border-left:4px solid #27a05b}
+.admin-technical-item.status-orange{border-left-color:#f0a21a}
+.admin-technical-item.status-red{border-left-color:#ed2635}
+.admin-technical-item.status-gray{border-left-color:#aeb8c6}
+.admin-tech-item-icon{width:34px;height:34px;min-width:34px;border-radius:10px;background:#e8f2ff;display:flex;align-items:center;justify-content:center;font-size:17px}
+.admin-technical-item>div{min-width:0;flex:1}
+.admin-technical-item strong{display:block;font-size:13px;color:#12233f}
+.admin-technical-item small{display:block;font-size:11px;color:#718096;margin-top:2px}
+.admin-technical-item>b{font-size:10px;font-weight:800;color:#159447;text-align:right}
+.admin-technical-item.status-orange>b{color:#b76b00}
+.admin-technical-item.status-red>b{color:#ed2635}
+.admin-technical-item.status-gray>b{color:#7b8798}
+.admin-technical-menu-button{position:relative;padding-right:48px}.admin-service-menu-button{position:relative;padding-right:48px}
+.admin-technical-warning{display:none;margin-left:7px;font-size:17px;line-height:1;vertical-align:-2px;animation:adminTechnicalWarningBlink .8s steps(2,start) infinite}
+.admin-technical-warning.show{display:inline-block}
+@keyframes adminTechnicalWarningBlink{50%{opacity:0;transform:scale(1.15)}}
+</style>
+
+<style id="admin-service-modern-style">
+.admin-service-page{padding:0 0 34px!important}
+.admin-service-list{display:flex;flex-direction:column;gap:12px}
+.admin-service-card{background:#fff!important;border:1px solid #e7edf5!important;border-radius:20px!important;padding:16px!important;box-shadow:0 10px 28px rgba(24,55,99,.08)!important}
+.admin-service-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.admin-service-icon{width:46px;height:46px;min-width:46px;border-radius:14px;background:#eef5ff;color:#1267d8;display:flex;align-items:center;justify-content:center;font-size:23px}
+.admin-service-title-wrap{min-width:0;flex:1}
+.admin-service-vehicle{font-size:17px;font-weight:850;color:#12233f;line-height:1.2}
+.admin-service-driver{font-size:12px;color:#718096;margin-top:4px}
+.admin-service-date{font-size:11px;color:#8491a3;text-align:right;white-space:nowrap}
+.admin-service-problem{background:#f8fafc;border:1px solid #e7edf5;border-radius:15px;padding:13px 14px;color:#26384f;font-size:14px;line-height:1.45;white-space:pre-wrap;word-break:break-word;margin-bottom:12px}
+.admin-service-photo{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:13px;background:#edf5ff;color:#1267d8;text-decoration:none;font-size:13px;font-weight:800;margin-bottom:12px}
+.admin-service-photo:active{transform:scale(.98)}
+.admin-service-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.admin-service-status{width:100%;box-sizing:border-box;border:1px solid #dce5f0;border-radius:14px;background:#f8fafc;padding:11px 12px;color:#17345f;font-weight:800;font-size:13px}
+.admin-service-delete{width:100%;border:1px solid #f0caca;border-radius:14px;background:#fff5f5;color:#c62828;padding:11px 12px;font-weight:800;font-size:13px;cursor:pointer}
+.admin-service-delete:disabled{opacity:.55;cursor:not-allowed}
+.admin-service-empty{padding:26px 18px;text-align:center}
+.admin-service-count{margin:0 0 12px;color:#718096;font-size:12px;font-weight:700}
+@media(max-width:600px){.admin-service-card{padding:14px!important}.admin-service-date{font-size:10px}.admin-service-actions{grid-template-columns:1fr}.admin-service-title-wrap{min-width:0}}
+</style>
+
+
+<style>
+.service-warning-triangle{position:absolute;right:14px;top:50%;transform:translateY(-50%);z-index:5;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin-left:8px;
+  font-size:18px;
+  line-height:1;
+  animation:serviceWarningBlink 1s infinite;
+}
+.service-warning-triangle.show{display:inline-flex}
+.service-warning-triangle:not(.show){display:none}
+@keyframes serviceWarningBlink{
+  0%, 45% { opacity:1; transform:scale(1); }
+  50%, 100% { opacity:.25; transform:scale(.92); }
+}
+</style>
+
+</head>
+
+<div class="app"><main id="screen"></main></div>
+<nav class="bottom-nav" aria-label="Hlavní navigace">
+  <button id="navHome" onclick="showVehicleList()"><span>⌂</span>Domů</button>
+  <button id="navTrips" onclick="currentVehicleName && showTrips(currentVehicleName)"><span>▤</span>Jízdy</button>
+  <button id="navState" onclick="currentVehicleName && showTechnicalStatus(currentVehicleName)"><span>◉</span>TECHNICKÝ STAV</button>
+  <button id="navService" onclick="currentVehicleName && showService(currentVehicleName)"><span>🛠</span>HLÁŠENÍ/SERVIS</button>
+
+  <details class="nav-more">
+    <summary id="navMore"><span>•••</span>Více</summary>
+    <div class="nav-more-menu">
+      <button type="button" onclick="showAdminLogin()">⚙️&nbsp; Administrátor</button>
+    </div>
+  </details>
+</nav>
+
+
+
+
+  
+<script>
+function hasNewServiceReports(reports){
+  return Array.isArray(reports) && reports.some(function(r){
+    return String(r && r.status || "Nové").trim() === "Nové";
+  });
+}
+function serviceWarningHtml(reports){
+  return hasNewServiceReports(reports)
+    ? '<span class="service-warning-triangle" title="Nové servisní hlášení">⚠️</span>'
+    : '';
+}
+</script>
+
+<script>
+
+    let currentVehicleName = "";
+    function setActiveNav(active) {
+      document.querySelectorAll('.bottom-nav button').forEach(function(btn) {
+        btn.classList.remove('active');
+      });
+      const el = document.getElementById('nav' + active);
+      if (el) el.classList.add('active');
+    }
+
+
+    function loadVehicleList() {
+
+  const container =
+    document.getElementById("vehicleList");
+
+  if (!container) {
+    return;
+  }
+
+
+  google.script.run
+
+    .withSuccessHandler(function(vehicles) {
+
+      if (!vehicles || vehicles.length === 0) {
+
+        container.innerHTML = `
+          <div class="empty-card">
+            🚐 Žádná vozidla nejsou nastavena.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      container.innerHTML = "";
+
+
+      vehicles.forEach(function(vehicle, index) {
+
+        const vehicleId =
+          "vehicle-km-" + index;
+
+
+        const card =
+          document.createElement("div");
+
+        card.className =
+          "vehicle-card";
+
+
+        const vehicleImage = vehicle.imageUrl
+          ? `<img src="${vehicle.imageUrl}" alt="${vehicle.name}" loading="lazy">`
+          : `<svg class="vehicle-illustration" viewBox="0 0 520 240" role="img" aria-label="Dodávka ${vehicle.name}">
+              <defs><linearGradient id="vanBody${index}" x1="0" x2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#dbe5f1"/></linearGradient></defs>
+              <ellipse cx="265" cy="207" rx="190" ry="18" fill="#cbd5e1" opacity=".55"/>
+              <path d="M80 160 L92 82 Q96 57 123 52 L350 52 Q374 52 392 76 L437 127 Q446 138 447 160 L447 177 Q447 187 437 187 L102 187 Q80 187 80 160Z" fill="url(#vanBody${index})" stroke="#9aa9bb" stroke-width="4"/>
+              <path d="M356 65 L386 91 L414 126 L356 126Z" fill="#b9d0e8" stroke="#8da2b8" stroke-width="3"/>
+              <path d="M105 68 L337 68 L337 126 L99 126Z" fill="#cfe0ef"/>
+              <rect x="112" y="130" width="214" height="39" rx="5" fill="#f4f7fa" stroke="#d1dae5" stroke-width="2"/>
+              <path d="M338 130 L425 130 L438 164 L338 164Z" fill="#edf2f7" stroke="#cbd5e1" stroke-width="2"/>
+              <circle cx="150" cy="187" r="29" fill="#1f2937"/><circle cx="150" cy="187" r="14" fill="#94a3b8"/>
+              <circle cx="382" cy="187" r="29" fill="#1f2937"/><circle cx="382" cy="187" r="14" fill="#94a3b8"/>
+              <rect x="93" y="145" width="12" height="18" rx="4" fill="#f59e0b"/><rect x="428" y="145" width="10" height="18" rx="4" fill="#ef4444"/>
+              <text x="225" y="157" text-anchor="middle" font-family="Arial" font-size="16" font-weight="700" fill="#174a8b">VOLKSWAGEN</text>
+            </svg>`;
+
+        card.innerHTML = `
+          <div class="vehicle-photo">${vehicleImage}</div>
+          <div>
+            <div class="vehicle-name">${vehicle.name}</div>
+            <div class="vehicle-km-label">Poslední stav tachometru</div>
+            <div class="vehicle-km" id="${vehicleId}">Načítám...</div>
+          </div>
+          <div class="vehicle-warning" id="${vehicleId}-warning" style="display:none;" aria-label="Upozornění">⚠️</div>
+        `;
+
+        card.onclick = function() {
+
+          showVehicle(vehicle.name);
+
+        };
+
+
+        container.appendChild(card);
+
+
+        google.script.run
+
+          .withSuccessHandler(function(lastKm) {
+
+            const kmElement =
+              document.getElementById(vehicleId);
+
+            if (kmElement) {
+
+              kmElement.textContent =
+                formatNumber(lastKm) + " km";
+
+              google.script.run
+                .withSuccessHandler(function(status) {
+                  const warning = document.getElementById(vehicleId + "-warning");
+                  if (!warning || !status) return;
+                  const today = new Date();
+                  today.setHours(0,0,0,0);
+                  const needsAttention =
+                    (status.vignetteUntil && new Date(status.vignetteUntil) < today) ||
+                    (status.stkUntil && new Date(status.stkUntil) < today) ||
+                    (status.oilNextKm && Number(status.oilNextKm) < Number(lastKm)) ||
+                    (status.serviceNext && new Date(status.serviceNext) < today);
+                  warning.style.display = needsAttention ? "block" : "none";
+                })
+                .withFailureHandler(function() {})
+                .getTechnicalStatus(vehicle.name);
+
+            }
+
+          })
+
+          .withFailureHandler(function(error) {
+
+            const kmElement =
+              document.getElementById(vehicleId);
+
+            if (kmElement) {
+
+              kmElement.textContent =
+                "Nelze načíst";
+
+            }
+
+            console.error(
+              "Chyba KM vozidla:",
+              vehicle.name,
+              error
+            );
+
+          })
+
+          .getLastMileage(vehicle.name);
+
+      });
+
+    })
+
+    .withFailureHandler(function(error) {
+
+      container.innerHTML = `
+        <div class="empty-card">
+          ❌ Vozidla se nepodařilo načíst.
+        </div>
+      `;
+
+      console.error(
+        "Chyba při načítání vozidel:",
+        error
+      );
+
+    })
+
+    .getVehicles();
+
+}
+
+function setBottomNavVisible(visible) {
+  const nav = document.querySelector('.bottom-nav');
+  if (nav) nav.style.display = visible ? 'flex' : 'none';
+}
+
+
+function updateServiceNavWarning(vehicleName) {
+  const navState = document.getElementById("navState");
+  if (!navState || !vehicleName) return;
+
+  google.script.run
+    .withSuccessHandler(function(status) {
+      if (!navState) return;
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const needsAttention =
+        !!(status && status.vignetteUntil && new Date(status.vignetteUntil) < today) ||
+        !!(status && status.stkUntil && new Date(status.stkUntil) < today) ||
+        !!(status && status.oilNextKm && status.lastKm &&
+           Number(status.oilNextKm) < Number(status.lastKm)) ||
+        !!(status && status.serviceNext && new Date(status.serviceNext) < today);
+
+      navState.classList.toggle("warning-active", needsAttention);
+    })
+    .withFailureHandler(function() {
+      if (navState) navState.classList.remove("warning-active");
+    })
+    .getTechnicalStatus(vehicleName);
+}
+
+function showVehicleList() {
+  setBottomNavVisible(false);
+  setActiveNav("Home");
+  document.getElementById("screen").innerHTML = `
+    <div class="home-screen">
+      <div class="home-header">
+        <div class="home-header-title">Kniha jízd</div>
+        <div class="home-header-subtitle">Vyberte vozidlo</div>
+        <button type="button" class="admin-button" onclick="showAdminLogin()">⚙️ Admin</button>
+      </div>
+      <div class="home-content">
+        <div class="home-section-title">🚐 Vozidla</div>
+        <div id="vehicleList"><div class="empty-card">🚐 Načítám vozidla...</div></div>
+      </div>
+    </div>
+  `;
+  loadVehicleList();
+}
+
+function showAdminLogin() {
+  setBottomNavVisible(false);
+  setActiveNav("More");
+
+  document.getElementById("screen").innerHTML = `
+    <div class="content new-trip-modern">
+
+      <div class="new-trip-hero">
+        <div class="new-trip-hero-title">Administrátor</div>
+        <div class="new-trip-hero-subtitle">Přihlášení administrátora</div>
+        <div class="new-trip-month">${getCurrentMonthName()}</div>
+      </div>
+
+      <div class="form-card" style="margin-top:14px;">
+
+        <div class="form-label">
+          Heslo administrátora
+        </div>
+
+        <input
+          type="password"
+          id="adminPassword"
+          class="form-input"
+          placeholder="Zadejte heslo"
+          autocomplete="off"
+        >
+
+        <button
+          class="form-button"
+          onclick="loginAdmin()"
+          style="margin-top:15px;"
+        >
+          🔐 Přihlásit
+        </button>
+
+        <div
+          id="adminLoginMessage"
+          style="
+            margin-top:12px;
+            text-align:center;
+          "
+        ></div>
+
+      </div>
+
+    </div>
+  `;
+
+  setTimeout(function() {
+    const input = document.getElementById("adminPassword");
+
+    if (input) {
+      input.focus();
+
+      input.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+          loginAdmin();
+        }
+      });
+    }
+  }, 100);
+}
+function loginAdmin() {
+
+  const password =
+    document.getElementById("adminPassword").value.trim();
+
+  const message =
+    document.getElementById("adminLoginMessage");
+
+  if (!password) {
+    message.innerHTML = `
+      <span style="color:#d32f2f;">
+        Zadejte heslo.
+      </span>
+    `;
+    return;
+  }
+
+  message.innerHTML = `
+    <span style="color:#666;">
+      ⏳ Ověřuji heslo...
+    </span>
+  `;
+
+  google.script.run
+
+    .withSuccessHandler(function(correct) {
+
+      if (correct) {
+
+        message.innerHTML = `
+          <span style="color:#2e7d32;">
+            ✅ Přihlášení úspěšné
+          </span>
+        `;
+
+        setTimeout(function() {
+          showAdmin();
+        }, 300);
+
+      } else {
+
+        message.innerHTML = `
+          <span style="color:#d32f2f;">
+            ❌ Nesprávné heslo
+          </span>
+        `;
+
+        document.getElementById("adminPassword").value = "";
+        document.getElementById("adminPassword").focus();
+      }
+
+    })
+
+    .withFailureHandler(function(error) {
+
+      message.innerHTML = `
+        <span style="color:#d32f2f;">
+          ❌ ${error.message}
+        </span>
+      `;
+
+    })
+
+    .checkAdminPassword(password);
+}
+
+function showAdmin() {
+  setBottomNavVisible(false);
+
+  document.getElementById("screen").innerHTML = `
+    <div class="content new-trip-modern">
+
+      <div class="new-trip-hero">
+        <div class="new-trip-hero-title">Administrátor</div>
+        <div class="new-trip-hero-subtitle">Správa aplikace</div>
+        <div class="new-trip-month">${getCurrentMonthName()}</div>
+        <button type="button" class="admin-logout-button" onclick="showVehicleList()">
+          Odhlásit
+        </button>
+      </div>
+
+      <div class="admin-menu">
+
+        <button
+          class="form-button"
+          onclick="showAdminVehicles()"
+        >
+          🚚 Vozidla
+        </button>
+
+        <button
+          class="form-button"
+          onclick="showAdminFuelCards()"
+        >
+          💳 Tankovací karty
+        </button>
+
+        <button
+          class="form-button admin-technical-menu-button"
+          onclick="showAdminTechnicalStatus()"
+        >
+          🔧 Technický stav <span id="adminTechnicalWarning" class="admin-technical-warning" aria-label="Technický stav vyžaduje pozornost">⚠️</span>
+        </button>
+
+        <button
+          class="form-button admin-service-menu-button"
+          onclick="showAdminServiceReports()"
+        >
+          🛠️ Servis / hlášení <span id="adminServiceWarning" class="service-warning-triangle" aria-label="Nové servisní hlášení">⚠️</span>
+        </button>
+
+      </div>
+
+    </div>
+  `;
+
+  loadAdminTechnicalWarning();
+  loadAdminServiceWarning();
+}
+
+function loadAdminServiceWarning() {
+  const warning = document.getElementById("adminServiceWarning");
+  if (!warning) return;
+
+  warning.classList.remove("show");
+
+  google.script.run
+    .withSuccessHandler(function(reports) {
+      const hasNew = Array.isArray(reports) && reports.some(function(report) {
+        return String(report && report.status || "Nové").trim() === "Nové";
+      });
+
+      const currentWarning = document.getElementById("adminServiceWarning");
+      if (currentWarning) {
+        currentWarning.classList.toggle("show", hasNew);
+      }
+    })
+    .withFailureHandler(function() {
+      // Při chybě načtení necháme nabídku bez varovného trojúhelníku.
+    })
+    .getAdminServiceReports();
+}
+
+function loadAdminTechnicalWarning() {
+  const warning = document.getElementById("adminTechnicalWarning");
+  if (!warning) return;
+
+  warning.classList.remove("show");
+
+  google.script.run
+    .withSuccessHandler(function(vehicles) {
+      if (!Array.isArray(vehicles) || vehicles.length === 0) return;
+
+      const requests = vehicles.map(function(vehicle) {
+        return new Promise(function(resolve) {
+          google.script.run
+            .withSuccessHandler(function(status) {
+              resolve(status);
+            })
+            .withFailureHandler(function() {
+              resolve(null);
+            })
+            .getTechnicalStatus(vehicle.name);
+        });
+      });
+
+      Promise.all(requests).then(function(statuses) {
+        const hasProblem = statuses.some(function(status) {
+          return status && adminTechnicalStatusNeedsAttention(status);
+        });
+
+        const currentWarning = document.getElementById("adminTechnicalWarning");
+        if (currentWarning) {
+          currentWarning.classList.toggle("show", hasProblem);
+        }
+      });
+    })
+    .withFailureHandler(function() {
+      // Při chybě načtení necháme nabídku bez varovného trojúhelníku.
+    })
+    .getAdminVehicles();
+}
+
+function adminTechnicalStatusNeedsAttention(status) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  function dateNeedsAttention(value) {
+    if (!value) return false;
+    const d = new Date(value);
+    if (isNaN(d.getTime())) return false;
+    d.setHours(0, 0, 0, 0);
+    const diff = Math.ceil((d - today) / 86400000);
+    return diff <= 30;
+  }
+
+  function kmNeedsAttention(last, next) {
+    if (!next || !last) return false;
+    const remaining = Number(next) - Number(last);
+    return !isNaN(remaining) && remaining <= 4000;
+  }
+
+  return dateNeedsAttention(status.vignetteUntil) ||
+         dateNeedsAttention(status.stkUntil) ||
+         kmNeedsAttention(status.currentKm, status.oilNextKm) ||
+         dateNeedsAttention(status.serviceNext);
+}
+
+function showAdminTechnicalStatus() {
+  setBottomNavVisible(false);
+
+  document.getElementById("screen").innerHTML = `
+    <div class="content new-trip-modern admin-technical-page">
+
+      <div class="new-trip-hero">
+        <button type="button" class="admin-hero-back" onclick="showAdmin()">←</button>
+        <div class="new-trip-hero-title">Technický stav</div>
+        <div class="new-trip-hero-subtitle">Přehled technického stavu vozidel</div>
+        <div class="new-trip-month">${getCurrentMonthName()}</div>
+      </div>
+
+      <div id="adminTechnicalList">
+        <div class="empty-card">⏳ Načítám technický stav...</div>
+      </div>
+
+    </div>
+  `;
+
+  google.script.run
+    .withSuccessHandler(renderAdminTechnicalStatus)
+    .withFailureHandler(function(error) {
+      const container = document.getElementById("adminTechnicalList");
+      if (container) {
+        container.innerHTML = `
+          <div class="empty-card">
+            ❌ Technický stav se nepodařilo načíst.<br>
+            <small>${error && error.message ? error.message : "Neznámá chyba"}</small>
+          </div>
+        `;
+      }
+    })
+    .getAdminVehicles();
+}
+
+function renderAdminTechnicalStatus(vehicles) {
+  const container = document.getElementById("adminTechnicalList");
+  if (!container) return;
+
+  if (!Array.isArray(vehicles) || vehicles.length === 0) {
+    container.innerHTML = `
+      <div class="empty-card">
+        🚐 Žádná vozidla
+      </div>
+    `;
+    return;
+  }
+
+  const requests = vehicles.map(function(vehicle, index) {
+    return new Promise(function(resolve) {
+      google.script.run
+        .withSuccessHandler(function(status) {
+          resolve({ vehicle: vehicle, status: status, index: index });
+        })
+        .withFailureHandler(function(error) {
+          resolve({ vehicle: vehicle, status: null, error: error, index: index });
+        })
+        .getTechnicalStatus(vehicle.name);
+    });
+  });
+
+  Promise.all(requests).then(function(results) {
+    let html = `
+      <div class="admin-technical-list">
+    `;
+
+    results.forEach(function(result) {
+      const vehicle = result.vehicle;
+      const status = result.status;
+
+      if (!status) {
+        html += `
+          <div class="form-card admin-technical-vehicle-card">
+            <div class="admin-technical-vehicle-head">
+              <div class="admin-technical-vehicle-icon">🚐</div>
+              <div class="admin-technical-vehicle-info">
+                <div class="admin-technical-vehicle-name">${vehicle.name || "Vozidlo"}</div>
+                <div class="admin-technical-vehicle-sub">Technický stav nelze načíst</div>
+              </div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      function dateState(value) {
+        if (!value) return { cls: "status-gray", text: "Neuvedeno", icon: "⚪" };
+        const d = new Date(value);
+        d.setHours(0, 0, 0, 0);
+        const diff = Math.ceil((d - today) / 86400000);
+        if (diff < 0) return { cls: "status-red", text: "Po termínu", icon: "🔴" };
+        if (diff <= 30) return { cls: "status-orange", text: "Blíží se termín", icon: "🟠" };
+        return { cls: "status-green", text: "V pořádku", icon: "🟢" };
+      }
+
+      function kmState(last, next) {
+        if (!next || !last) return { cls: "status-gray", text: "Neuvedeno", icon: "⚪" };
+        const remaining = Number(next) - Number(last);
+        if (remaining < 0) return { cls: "status-red", text: "Po termínu", icon: "🔴" };
+        if (remaining <= 4000) return { cls: "status-orange", text: "Blíží se výměna", icon: "🟠" };
+        return { cls: "status-green", text: "V pořádku", icon: "🟢" };
+      }
+
+      const vignette = dateState(status.vignetteUntil);
+      const stk = dateState(status.stkUntil);
+      const oil = kmState(status.currentKm, status.oilNextKm);
+      const service = dateState(status.serviceNext);
+
+      const states = [vignette, stk, oil, service];
+      const hasRed = states.some(function(x) { return x.cls === "status-red"; });
+      const hasOrange = states.some(function(x) { return x.cls === "status-orange"; });
+      const overallClass = hasRed ? "status-red" : (hasOrange ? "status-orange" : "status-green");
+      const overallText = hasRed ? "Vyžaduje pozornost" : (hasOrange ? "Blíží se termín" : "V pořádku");
+      const overallIcon = hasRed ? "🔴" : (hasOrange ? "🟠" : "🟢");
+
+      html += `
+        <div class="form-card admin-technical-vehicle-card">
+          <div class="admin-technical-vehicle-head">
+            <div class="admin-technical-vehicle-icon">
+              <svg viewBox="0 0 56 56" aria-hidden="true">
+                <path d="M12 34l4-15c.7-2.5 2.9-4 5.5-4h13c2.6 0 4.8 1.5 5.5 4l4 15v8H12z" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/>
+                <path d="M17 27h22M18 35h4M34 35h4" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+                <circle cx="19" cy="42" r="3.5" fill="currentColor"/><circle cx="37" cy="42" r="3.5" fill="currentColor"/>
+              </svg>
+            </div>
+            <div class="admin-technical-vehicle-info">
+              <div class="admin-technical-vehicle-name">${vehicle.name || "Vozidlo"}</div>
+              <div class="admin-technical-vehicle-sub">Aktuální stav: ${status.currentKm ? formatNumber(status.currentKm) + " km" : "Neuvedeno"}</div>
+            </div>
+            <div class="admin-technical-overall ${overallClass}">${overallIcon}</div>
+          </div>
+
+          <div class="admin-technical-items">
+            <div class="admin-technical-item ${vignette.cls}"><span class="admin-tech-item-icon">🛣️</span><div><strong>Dálniční známka</strong><small>${formatTechnicalDate(status.vignetteUntil)}</small></div><b>${vignette.text}</b></div>
+            <div class="admin-technical-item ${stk.cls}"><span class="admin-tech-item-icon">📋</span><div><strong>STK</strong><small>${formatTechnicalDate(status.stkUntil)}</small></div><b>${stk.text}</b></div>
+            <div class="admin-technical-item ${oil.cls}"><span class="admin-tech-item-icon">🛢️</span><div><strong>Výměna oleje</strong><small>${status.oilNextKm ? formatNumber(status.oilNextKm) + " km" : "Neuvedeno"}</small></div><b>${oil.text}</b></div>
+            <div class="admin-technical-item ${service.cls}"><span class="admin-tech-item-icon">🛠️</span><div><strong>Servis</strong><small>${formatTechnicalDate(status.serviceNext)}</small></div><b>${service.text}</b></div>
+            <div class="admin-technical-item status-gray"><span class="admin-tech-item-icon">🚗</span><div><strong>Pneumatiky</strong><small>${status.tires || "Neuvedeno"}</small></div></div>
+            <div class="admin-technical-item status-gray"><span class="admin-tech-item-icon">🔑</span><div><strong>VIN</strong><small>${status.vin || "Neuvedeno"}</small></div></div>
+          </div>
+        </div>
+      `;
+    });
+
+    html += `</div>`;
+    container.innerHTML = html;
+  });
+}
+
+
+function showAdminServiceReports() {
+  setBottomNavVisible(false);
+
+  document.getElementById("screen").innerHTML = `
+    <div class="content new-trip-modern admin-service-page">
+
+      <div class="new-trip-hero">
+        <button type="button" class="admin-hero-back" onclick="showAdmin()">←</button>
+        <div class="new-trip-hero-title">Servis / hlášení<span id="serviceWarningMenu" class="service-warning-triangle" style="display:none;">⚠️</span></div>
+        <div class="new-trip-hero-subtitle">Přehled nahlášených problémů</div>
+        <div class="new-trip-month">${getCurrentMonthName()}</div>
+      </div>
+
+      <div id="adminServiceReports">
+        <div class="empty-card">⏳ Načítám hlášení...</div>
+      </div>
+
+    </div>
+  `;
+
+  google.script.run
+    .withSuccessHandler(renderAdminServiceReports)
+    .withFailureHandler(function(error) {
+      const container = document.getElementById("adminServiceReports");
+      if (container) {
+        container.innerHTML = `
+          <div class="empty-card admin-service-empty">
+            ❌ Hlášení se nepodařilo načíst.<br>
+            <small>${error && error.message ? error.message : "Neznámá chyba"}</small>
+          </div>
+        `;
+      }
+    })
+    .getAdminServiceReports();
+}
+
+function getAdminServicePhotoUrl(value) {
+  const text = String(value || "").trim();
+  if (!text) return "";
+
+  const markdownMatch = text.match(/\((https?:\/\/[^)]+)\)/);
+  if (markdownMatch) return markdownMatch[1];
+
+  if (/^https?:\/\//i.test(text)) return text;
+  return "";
+}
+
+function renderAdminServiceReports(reports) {
+  const container = document.getElementById("adminServiceReports");
+  if (!container) return;
+
+  if (!Array.isArray(reports) || reports.length === 0) {
+    container.innerHTML = `
+      <div class="form-card admin-service-card admin-service-empty">
+        <div style="font-size:38px;margin-bottom:10px;">🛠️</div>
+        <div style="font-weight:800;color:#17345f;">Žádná servisní hlášení</div>
+        <div style="margin-top:6px;color:#8491a3;font-size:12px;">Zde se zobrazí problémy nahlášené řidiči.</div>
+      </div>
+    `;
+    return;
+  }
+
+  window.adminServiceReports = reports;
+
+  let html = `
+    <div class="admin-service-count">Celkem hlášení: ${reports.length}</div>
+    <div class="admin-service-list">
+  `;
+
+  reports.forEach(function(report, index) {
+    const status = report.status || "Nové";
+    const photoUrl = getAdminServicePhotoUrl(report.photo);
+    const canDelete = status === "Vyřešeno";
+
+    html += `
+      <div class="form-card admin-service-card">
+        <div class="admin-service-head">
+          <div class="admin-service-icon">
+            <svg viewBox="0 0 56 56" aria-hidden="true" width="28" height="28">
+              <path d="M35 10a11 11 0 0 0 1 14L20 40a5 5 0 1 0 7 7l16-16a11 11 0 0 0 3-12l-8 8-6-2-2-6 8-9a11 11 0 0 0-3-0Z" fill="currentColor"/>
+              <circle cx="23" cy="42" r="4" fill="white"/>
+            </svg>
+          </div>
+          <div class="admin-service-title-wrap">
+            <div class="admin-service-vehicle">${report.vehicle || "Neznámé vozidlo"}</div>
+            <div class="admin-service-driver">👤 ${report.driver || "Neuvedený řidič"}</div>
+          </div>
+          <div class="admin-service-date">${report.date || ""}</div>
+        </div>
+
+        <div class="admin-service-problem">${report.problem || "Bez popisu problému"}</div>
+
+        ${photoUrl ? `
+          <a class="admin-service-photo" href="${photoUrl}" target="_blank" rel="noopener">📷 Zobrazit fotografii</a>
+        ` : ""}
+
+        <div class="admin-service-actions">
+          <select class="admin-service-status" onchange="changeAdminServiceStatus(${index}, this.value)">
+            <option value="Nové" ${status === "Nové" ? "selected" : ""}>🔴 Nové</option>
+            <option value="Řeší se" ${status === "Řeší se" ? "selected" : ""}>🟠 Řeší se</option>
+            <option value="Vyřešeno" ${status === "Vyřešeno" ? "selected" : ""}>🟢 Vyřešeno</option>
+          </select>
+          <button type="button" class="admin-service-delete" ${canDelete ? "" : "disabled"} onclick="deleteAdminServiceReport(${index})">
+            🗑️ Smazat
+          </button>
+        </div>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
+function changeAdminServiceStatus(index, status) {
+  const reports = window.adminServiceReports;
+  const report = reports && reports[index];
+  if (!report) return;
+
+  google.script.run
+    .withSuccessHandler(function() {
+      report.status = status;
+      renderAdminServiceReports(reports);
+      loadAdminServiceWarning();
+    })
+    .withFailureHandler(function(error) {
+      alert("Stav hlášení se nepodařilo změnit:\n\n" + (error && error.message ? error.message : error));
+      renderAdminServiceReports(reports);
+    })
+    .updateServiceReportStatus(report.row, status);
+}
+
+function deleteAdminServiceReport(index) {
+  const reports = window.adminServiceReports;
+  const report = reports && reports[index];
+  if (!report) return;
+
+  if ((report.status || "") !== "Vyřešeno") {
+    alert("Smazat lze pouze vyřešené hlášení.");
+    return;
+  }
+
+  if (!confirm("Opravdu chcete toto vyřešené hlášení smazat?")) return;
+
+  google.script.run
+    .withSuccessHandler(function() {
+      showAdminServiceReports();
+    })
+    .withFailureHandler(function(error) {
+      alert("Hlášení se nepodařilo smazat:\n\n" + (error && error.message ? error.message : error));
+    })
+    .deleteServiceReport(report.row);
+}
+
+function showAdminFuelCards() {
+  setBottomNavVisible(false);
+
+  document.getElementById("screen").innerHTML = `
+    <div class="content new-trip-modern admin-fuel-cards-page">
+
+      <div class="new-trip-hero">
+        <button type="button" class="admin-hero-back" onclick="showAdmin()">←</button>
+        <div class="new-trip-hero-title">Tankovací karty</div>
+        <div class="new-trip-hero-subtitle">Správa tankovacích karet</div>
+        <div class="new-trip-month">${getCurrentMonthName()}</div>
+      </div>
+
+      <div class="admin-fuel-cards-actions">
+        <button type="button" class="form-button admin-sync-button" onclick="syncAdminFuelCards()">
+          🔄 Synchronizovat s auty
+        </button>
+      </div>
+
+      <div id="fuelCardsList">
+        <div class="empty-card">
+          <div style="font-size:38px;margin-bottom:10px;">💳</div>
+          <div style="font-weight:600;">Načítám karty...</div>
+        </div>
+      </div>
+
+    </div>
+  `;
+
+  google.script.run
+    .withSuccessHandler(renderAdminFuelCards)
+    .withFailureHandler(function(error) {
+      const el = document.getElementById("fuelCardsList");
+      if (el) {
+        el.innerHTML = `
+          <div class="empty-card">
+            ❌ Karty se nepodařilo načíst.<br>
+            <small>${error && error.message ? error.message : "Neznámá chyba"}</small>
+          </div>
+        `;
+      }
+    })
+    .getFuelCards();
+}
+
+function renderAdminFuelCards(cards) {
+  const container = document.getElementById("fuelCardsList");
+  if (!container) return;
+
+  if (!Array.isArray(cards) || cards.length === 0) {
+    container.innerHTML = `
+      <div class="empty-card">
+        <div style="font-size:38px;margin-bottom:10px;">💳</div>
+        <div style="font-weight:700;">Žádné tankovací karty</div>
+      </div>
+    `;
+    return;
+  }
+
+  window.adminFuelCards = cards;
+
+  container.innerHTML = cards.map(function(card, index) {
+    const active = card.active === true;
+
+    return `
+      <div class="admin-fuel-card admin-fuel-card-clickable"
+           onclick="showAdminFuelCard(${index})">
+        <div class="admin-fuel-card-icon">
+          <svg viewBox="0 0 56 56" aria-hidden="true">
+            <rect x="11" y="11" width="23" height="35" rx="3"
+              fill="none" stroke="currentColor" stroke-width="4"/>
+            <rect x="16" y="16" width="13" height="9" rx="1"
+              fill="currentColor"/>
+            <path d="M34 17h4c4 0 6 3 6 7v9l5 5v6c0 2-1 3-3 3h-1"
+              fill="none" stroke="currentColor" stroke-width="4"
+              stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <div class="admin-fuel-card-info">
+          <div class="admin-fuel-card-name">${card.name || "Bez názvu"}</div>
+          <div class="admin-fuel-card-type">
+            ${active ? "🟢 Aktivní karta" : "🔴 Neaktivní karta"}
+          </div>
+        </div>
+
+        <div class="admin-fuel-card-arrow">›</div>
+      </div>
+    `;
+  }).join("");
+}
+
+function showAdminFuelCard(index) {
+  const card = window.adminFuelCards && window.adminFuelCards[index];
+
+  if (!card) {
+    alert("Karta se nepodařila načíst.");
+    return;
+  }
+
+  document.getElementById("screen").innerHTML = `
+    <div class="content new-trip-modern admin-fuel-card-edit-page">
+
+      <div class="new-trip-hero">
+        <button type="button" class="admin-hero-back"
+                onclick="showAdminFuelCards()">←</button>
+        <div class="new-trip-hero-title">Upravit kartu</div>
+        <div class="new-trip-hero-subtitle">Nastavení tankovací karty</div>
+        <div class="new-trip-month">${getCurrentMonthName()}</div>
+      </div>
+
+      <div class="admin-fuel-edit-card form-card">
+        <div class="new-trip-field">
+          <div class="new-trip-icon">💳</div>
+          <div class="new-trip-field-body">
+            <label for="adminFuelCardName">Název karty</label>
+            <input id="adminFuelCardName"
+                   class="form-input"
+                   type="text"
+                   value="${card.name || ""}">
+          </div>
+        </div>
+
+        <div class="new-trip-field" style="margin-top:12px;">
+          <div class="new-trip-icon">🟢</div>
+          <div class="new-trip-field-body">
+            <label for="adminFuelCardActive">Stav karty</label>
+            <label class="admin-switch">
+              <input id="adminFuelCardActive"
+                     type="checkbox"
+                     ${card.active === true ? "checked" : ""}>
+              <span>Karta je aktivní</span>
+            </label>
+          </div>
+        </div>
+
+        <button type="button"
+                class="form-button new-trip-save admin-edit-button"
+                onclick="saveAdminFuelCardLocal(${index})">
+          💾 Uložit
+        </button>
+
+        <div id="adminFuelCardMessage" class="admin-save-message"></div>
+      </div>
+
+    </div>
+  `;
+}
+
+function saveAdminFuelCardLocal(index) {
+  const cards = window.adminFuelCards;
+  if (!cards || !cards[index]) return;
+
+  const name = document.getElementById("adminFuelCardName").value.trim();
+  const active = document.getElementById("adminFuelCardActive").checked;
+
+  if (!name) {
+    document.getElementById("adminFuelCardMessage").textContent =
+      "Zadejte název karty.";
+    return;
+  }
+
+  cards[index].name = name;
+  cards[index].active = active;
+
+  document.getElementById("adminFuelCardMessage").textContent =
+    "Změny připraveny.";
+
+  setTimeout(showAdminFuelCards, 500);
+}
+
+function showAdminVehicles() {
+  setBottomNavVisible(false);
+
+  document.getElementById("screen").innerHTML = `
+    <div class="content new-trip-modern">
+
+      <div class="new-trip-hero">
+        <button type="button" class="admin-hero-back" onclick="showAdmin()">←</button>
+        <div class="new-trip-hero-title">Vozidla</div>
+        <div class="new-trip-hero-subtitle">Správa vozidel</div>
+        <div class="new-trip-month">${getCurrentMonthName()}</div>
+      </div>
+
+      <div class="admin-vehicles-list">
+        <div id="adminVehicles">
+          <div class="empty-card">⏳ Načítám vozidla...</div>
+        </div>
+      </div>
+
+    </div>
+  `;
+
+  google.script.run
+    .withSuccessHandler(renderAdminVehicles)
+    .withFailureHandler(function(error) {
+      document.getElementById("adminVehicles").innerHTML = `
+        <div class="empty-card">
+          ❌ ${error.message}
+        </div>
+      `;
+    })
+    .getAdminVehicles();
+
+}
+function renderAdminVehicles(vehicles) {
+
+  const container = document.getElementById("adminVehicles");
+
+  if (!vehicles || vehicles.length === 0) {
+    container.innerHTML = `
+      <div class="empty-card">
+        🚚 Žádná vozidla
+      </div>
+    `;
+    return;
+  }
+
+  let html = "";
+
+  vehicles.forEach(function(vehicle) {
+
+    const status = vehicle.active
+      ? "🟢 Aktivní"
+      : "🔴 Neaktivní";
+
+    html += `
+      <div
+        class="admin-vehicle-card"
+        onclick='showAdminVehicle(${JSON.stringify(vehicle)})'
+      >
+        <div class="admin-vehicle-icon">🚐</div>
+
+        <div class="admin-vehicle-info">
+          <div class="admin-vehicle-name">${vehicle.name}</div>
+
+          <div class="admin-vehicle-status">
+            ${status}
+          </div>
+
+          <div class="admin-vehicle-detail">
+            💳 ${vehicle.defaultCard || "Neuvedena"}
+          </div>
+
+          <div class="admin-vehicle-detail">
+            💧 AdBlue: ${vehicle.adBlue ? "Ano" : "Ne"}
+          </div>
+        </div>
+
+        <div class="admin-vehicle-edit">›</div>
+      </div>
+    `;
+
+  });
+
+  container.innerHTML = html;
+}
+function showAdminVehicle(vehicle) {
+  setBottomNavVisible(false);
+
+  document.getElementById("screen").innerHTML = `
+    <div class="content new-trip-modern admin-vehicle-detail-page">
+
+      <div class="new-trip-hero">
+        <button type="button" class="admin-hero-back" onclick="showAdminVehicles()">←</button>
+        <div class="new-trip-hero-title">Vozidlo</div>
+        <div class="new-trip-hero-subtitle">Detail vozidla</div>
+        <div class="new-trip-month">${getCurrentMonthName()}</div>
+      </div>
+
+      <div class="new-trip-vehicle-card admin-detail-card">
+        <div class="new-trip-label">Vozidlo</div>
+        <div class="new-trip-vehicle-row">
+          <div class="new-trip-vehicle-icon">🚐</div>
+          <div class="new-trip-vehicle-text">
+            <div class="vehicle-title">${vehicle.name || "Vozidlo"}</div>
+            <div class="new-trip-vehicle-km">
+              ${vehicle.active ? "🟢 Aktivní" : "🔴 Neaktivní"}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="new-trip-grid admin-detail-grid">
+
+        <div class="form-card new-trip-field">
+          <div class="new-trip-icon">🚐</div>
+          <div class="new-trip-field-body">
+            <label>Stav vozidla</label>
+            <div class="admin-detail-value">
+              ${vehicle.active ? "Aktivní" : "Neaktivní"}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field">
+          <div class="new-trip-icon">💧</div>
+          <div class="new-trip-field-body">
+            <label>AdBlue</label>
+            <div class="admin-detail-value">
+              ${vehicle.adBlue ? "Ano" : "Ne"}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field new-trip-full">
+          <div class="new-trip-icon">💳</div>
+          <div class="new-trip-field-body">
+            <label>Výchozí tankovací karta</label>
+            <div class="admin-detail-value">
+              ${vehicle.defaultCard || "Neuvedena"}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field">
+          <div class="new-trip-icon">🛣️</div>
+          <div class="new-trip-field-body">
+            <label>Dálniční známka</label>
+            <div class="admin-detail-value">
+              ${vehicle.vignetteUntil || "Neuvedeno"}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field">
+          <div class="new-trip-icon">🔧</div>
+          <div class="new-trip-field-body">
+            <label>STK</label>
+            <div class="admin-detail-value">
+              ${vehicle.stkUntil || "Neuvedeno"}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field">
+          <div class="new-trip-icon">🛢️</div>
+          <div class="new-trip-field-body">
+            <label>Olej poslední KM</label>
+            <div class="admin-detail-value">
+              ${vehicle.oilLastKm || "Neuvedeno"}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field">
+          <div class="new-trip-icon">🛢️</div>
+          <div class="new-trip-field-body">
+            <label>Olej další KM</label>
+            <div class="admin-detail-value">
+              ${vehicle.oilNextKm || "Neuvedeno"}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field">
+          <div class="new-trip-icon">🛠️</div>
+          <div class="new-trip-field-body">
+            <label>Servis poslední</label>
+            <div class="admin-detail-value">
+              ${vehicle.serviceLast || "Neuvedeno"}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field">
+          <div class="new-trip-icon">🛠️</div>
+          <div class="new-trip-field-body">
+            <label>Servis další</label>
+            <div class="admin-detail-value">
+              ${vehicle.serviceNext || "Neuvedeno"}
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field new-trip-full">
+          <div class="new-trip-icon">🚗</div>
+          <div class="new-trip-field-body">
+            <label>Pneumatiky</label>
+            <div class="admin-detail-value">
+              ${vehicle.tires || "Neuvedeno"}
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <button
+        class="form-button new-trip-save admin-edit-button"
+        onclick='showEditAdminVehicle(${JSON.stringify(vehicle)})'
+      >
+        ✏️ Upravit vozidlo
+      </button>
+
+    </div>
+  `;
+}
+
+function showEditAdminVehicle(vehicle) {
+  setBottomNavVisible(false);
+
+  document.getElementById("screen").innerHTML = `
+    <div class="content new-trip-modern admin-vehicle-edit-page">
+
+      <div class="new-trip-hero">
+        <button type="button" class="admin-hero-back" onclick='showAdminVehicle(${JSON.stringify(vehicle)})'>←</button>
+        <div class="new-trip-hero-title">Upravit vozidlo</div>
+        <div class="new-trip-hero-subtitle">Nastavení vozidla</div>
+        <div class="new-trip-month">${getCurrentMonthName()}</div>
+      </div>
+
+      <div class="admin-edit-grid">
+
+        <div class="form-card new-trip-field admin-edit-field">
+          <div class="new-trip-icon">🚐</div>
+          <div class="new-trip-field-body">
+            <label for="adminVehicleName">Název vozidla</label>
+            <input type="text" id="adminVehicleName" class="form-input input" value="${vehicle.name || ""}">
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field admin-edit-field">
+          <div class="new-trip-icon">📄</div>
+          <div class="new-trip-field-body">
+            <label for="adminVehicleSpreadsheetId">ID tabulky</label>
+            <input type="text" id="adminVehicleSpreadsheetId" class="form-input input" value="${vehicle.spreadsheetId || ""}">
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field admin-edit-field">
+          <div class="new-trip-icon ref-new-fuel">💳</div>
+          <div class="new-trip-field-body">
+            <label for="adminVehicleCard">Výchozí tankovací karta</label>
+            <input type="text" id="adminVehicleCard" class="form-input input" value="${vehicle.defaultCard || ""}">
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field admin-edit-field">
+          <div class="new-trip-icon">💧</div>
+          <div class="new-trip-field-body">
+            <label>AdBlue</label>
+            <label class="admin-switch">
+              <input type="checkbox" id="adminVehicleAdBlue" ${vehicle.adBlue ? "checked" : ""}>
+              <span>Vozidlo používá AdBlue</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field admin-edit-field">
+          <div class="new-trip-icon">🟢</div>
+          <div class="new-trip-field-body">
+            <label>Aktivní</label>
+            <label class="admin-switch">
+              <input type="checkbox" id="adminVehicleActive" ${vehicle.active ? "checked" : ""}>
+              <span>Vozidlo je aktivní</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field admin-edit-field">
+          <div class="new-trip-icon">🛣️</div>
+          <div class="new-trip-field-body">
+            <label for="adminVehicleVignette">Dálniční známka do</label>
+            <input type="date" id="adminVehicleVignette" class="form-input input" value="${vehicle.vignetteUntil || ""}">
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field admin-edit-field">
+          <div class="new-trip-icon">🔧</div>
+          <div class="new-trip-field-body">
+            <label for="adminVehicleStk">STK do</label>
+            <input type="date" id="adminVehicleStk" class="form-input input" value="${vehicle.stkUntil || ""}">
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field admin-edit-field">
+          <div class="new-trip-icon">🛢️</div>
+          <div class="new-trip-field-body">
+            <label for="adminVehicleOilLast">Olej poslední KM</label>
+            <input type="number" id="adminVehicleOilLast" class="form-input input" value="${vehicle.oilLastKm || ""}">
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field admin-edit-field">
+          <div class="new-trip-icon">🛢️</div>
+          <div class="new-trip-field-body">
+            <label for="adminVehicleOilNext">Olej další KM</label>
+            <input type="number" id="adminVehicleOilNext" class="form-input input" value="${vehicle.oilNextKm || ""}">
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field admin-edit-field">
+          <div class="new-trip-icon">🛠️</div>
+          <div class="new-trip-field-body">
+            <label for="adminVehicleServiceLast">Servis poslední</label>
+            <input type="date" id="adminVehicleServiceLast" class="form-input input" value="${vehicle.serviceLast || ""}">
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field admin-edit-field">
+          <div class="new-trip-icon">🛠️</div>
+          <div class="new-trip-field-body">
+            <label for="adminVehicleServiceNext">Servis další</label>
+            <input type="date" id="adminVehicleServiceNext" class="form-input input" value="${vehicle.serviceNext || ""}">
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field admin-edit-field admin-edit-full">
+          <div class="new-trip-icon">🚗</div>
+          <div class="new-trip-field-body">
+            <label for="adminVehicleTires">Pneumatiky</label>
+            <input type="text" id="adminVehicleTires" class="form-input input" value="${vehicle.tires || ""}">
+          </div>
+        </div>
+
+      </div>
+
+      <button
+        class="form-button new-trip-save admin-edit-button"
+        onclick='saveAdminVehicle(${JSON.stringify(vehicle)})'
+      >
+        💾 Uložit změny
+      </button>
+
+      <div id="adminVehicleMessage" class="admin-save-message"></div>
+
+    </div>
+  `;
+}
+
+
+function saveAdminVehicle(vehicle) {
+
+  const message =
+    document.getElementById("adminVehicleMessage");
+
+  const data = {
+
+    row: vehicle.row,
+
+    name:
+      document.getElementById("adminVehicleName").value.trim(),
+
+    spreadsheetId:
+      document.getElementById("adminVehicleSpreadsheetId").value.trim(),
+
+    defaultCard:
+      document.getElementById("adminVehicleCard").value.trim(),
+
+    adBlue:
+      document.getElementById("adminVehicleAdBlue").checked,
+
+    active:
+      document.getElementById("adminVehicleActive").checked,
+
+    vignetteUntil:
+      document.getElementById("adminVehicleVignette").value,
+
+    stkUntil:
+      document.getElementById("adminVehicleStk").value,
+
+    oilLastKm:
+      document.getElementById("adminVehicleOilLast").value,
+
+    oilNextKm:
+      document.getElementById("adminVehicleOilNext").value,
+
+    serviceLast:
+      document.getElementById("adminVehicleServiceLast").value,
+
+    serviceNext:
+      document.getElementById("adminVehicleServiceNext").value,
+
+    tires:
+      document.getElementById("adminVehicleTires").value.trim()
+  };
+
+  message.innerHTML = `
+    <span style="color:#666;">
+      ⏳ Ukládám...
+    </span>
+  `;
+
+  google.script.run
+
+    .withSuccessHandler(function() {
+
+      message.innerHTML = `
+        <span style="color:#2e7d32;">
+          ✅ Změny byly uloženy
+        </span>
+      `;
+
+      setTimeout(function() {
+        showAdminVehicles();
+      }, 700);
+
+    })
+
+    .withFailureHandler(function(error) {
+
+      message.innerHTML = `
+        <span style="color:#d32f2f;">
+          ❌ ${error.message}
+        </span>
+      `;
+
+    })
+
+    .updateAdminVehicle(data);
+}
+
+    function showVehicle(vehicleName) {
+  currentVehicleName = vehicleName;
+  setBottomNavVisible(true);
+  setActiveNav("Trips");
+  updateServiceNavWarning(vehicleName);
+
+  document.getElementById("screen").innerHTML = `
+
+    <div class="content new-trip-modern">
+
+      <div class="new-trip-hero">
+        <div class="new-trip-hero-title">Nová jízda</div>
+        <div class="new-trip-hero-subtitle">Zaznamenejte novou jízdu</div>
+        <div class="new-trip-month">${getCurrentMonthName()}</div>
+      </div>
+
+      <div class="new-trip-vehicle-card">
+        <div class="new-trip-label">Vozidlo</div>
+        <div class="new-trip-vehicle-row">
+          <div class="vehicle-icon-large new-trip-vehicle-icon">🚐</div>
+          <div class="new-trip-vehicle-text">
+            <div class="vehicle-title">${vehicleName}</div>
+            <div class="new-trip-vehicle-km">Aktuální stav: <span id="lastKm">Načítám...</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="new-trip-grid">
+        <div class="form-card new-trip-field">
+          <div class="new-trip-icon ref-new-calendar"><svg class="new-summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <rect x="10" y="13" width="36" height="34" rx="6" fill="none" stroke="currentColor" stroke-width="4"/>
+      <path d="M10 23h36" stroke="currentColor" stroke-width="4"/>
+      <path d="M19 8v10M37 8v10" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="20" cy="31" r="2.5" fill="currentColor"/><circle cx="28" cy="31" r="2.5" fill="currentColor"/><circle cx="36" cy="31" r="2.5" fill="currentColor"/>
+      <circle cx="20" cy="39" r="2.5" fill="currentColor"/><circle cx="28" cy="39" r="2.5" fill="currentColor"/>
+    </svg></div>
+          <div class="new-trip-field-body">
+            <label for="tripDate">Datum jízdy</label>
+            <input type="date" id="tripDate" class="input">
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field">
+          <div class="new-trip-icon ref-new-odometer"><svg class="new-summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <path d="M10 38a18 18 0 1 1 36 0" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+      <path d="M28 28l10-8" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="28" cy="28" r="4" fill="currentColor"/>
+      <path d="M15 38h5M36 38h5M28 17v5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    </svg></div>
+          <div class="new-trip-field-body">
+            <label>Počáteční stav km</label>
+            <div class="new-trip-readonly" id="lastKmDisplay">Načítám...</div>
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field">
+          <div class="new-trip-icon ref-new-odometer"><svg class="new-summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <path d="M10 38a18 18 0 1 1 36 0" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+      <path d="M28 28l10-8" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="28" cy="28" r="4" fill="currentColor"/>
+      <path d="M15 38h5M36 38h5M28 17v5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    </svg></div>
+          <div class="new-trip-field-body">
+            <label for="endKm">Konečný stav km</label>
+            <input type="number" id="endKm" placeholder="Zadejte km" class="input">
+            <div id="distance" class="distance">Zadejte konečný stav km</div>
+          </div>
+        </div>
+
+        
+
+        <div class="form-card new-trip-field">
+          <div class="new-trip-icon ref-new-purpose"><svg class="new-summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <rect x="10" y="17" width="36" height="29" rx="5" fill="none" stroke="currentColor" stroke-width="4"/>
+      <path d="M21 17v-4c0-2 2-4 4-4h6c2 0 4 2 4 4v4" fill="none" stroke="currentColor" stroke-width="4"/>
+      <path d="M10 28h36M25 28v5h6v-5" fill="none" stroke="currentColor" stroke-width="4"/>
+    </svg></div>
+          <div class="new-trip-field-body">
+            <label for="workTrip">Účel jízdy</label>
+            <label class="check-row new-trip-switch-row">
+              <input type="checkbox" checked id="workTrip">
+              <span>Pracovní jízda</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field">
+          <div class="new-trip-icon ref-new-card"><svg class="new-summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <rect x="7" y="14" width="42" height="29" rx="5" fill="none" stroke="currentColor" stroke-width="4"/>
+      <path d="M8 23h40" stroke="currentColor" stroke-width="4"/>
+      <rect x="13" y="31" width="12" height="5" rx="2" fill="currentColor"/>
+      <path d="M34 32h9" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+    </svg></div>
+          <div class="new-trip-field-body">
+            <label for="fuelCard">Tankovací karta</label>
+            <select id="fuelCard" class="input">
+              <option>Praha 1 EX</option>
+              <option>HOTOVĚ</option>
+              <option>Uni.Karta</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field">
+          <div class="new-trip-icon ref-new-fuel"><svg class="new-summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <rect x="11" y="11" width="23" height="35" rx="3" fill="none" stroke="currentColor" stroke-width="4"/>
+      <rect x="16" y="16" width="13" height="9" rx="1" fill="currentColor"/>
+      <path d="M34 17h4c4 0 6 3 6 7v9l5 5v6c0 2-1.5 3-3.5 3S42 42 42 40v-5l-3-3v-9c0-2-1-3-3-3h-2v-3Z" fill="currentColor"/>
+      <path d="M46 19v-5c0-2-1.5-3-3-3" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    </svg></div>
+          <div class="new-trip-field-body">
+            <label for="fuelCheck">Načerpané palivo (l)</label>
+            <label class="check-row new-trip-switch-row">
+              <input type="checkbox" id="fuelCheck">
+              <span>Tankoval jsem</span>
+            </label>
+            <div id="fuelSection" class="hidden new-trip-subfield">
+              <input type="number" id="fuelAmount" placeholder="Zadejte litry" class="input" inputmode="decimal">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field" id="adblueCard" style="display:none;">
+          <div class="new-trip-icon ref-new-adblue"><svg class="new-summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <path d="M28 7C24 14 16 21 16 31c0 7 5.4 12 12 12s12-5 12-12C40 21 32 14 28 7Z" fill="currentColor"/>
+      <path d="M24 31c0-4 2.5-7.2 5.5-9.8-1 3.5 1.5 5.8 1.5 9.2 0 3.2-2 5.3-4.1 5.3S24 34.2 24 31Z" fill="white" opacity=".9"/>
+    </svg></div>
+          <div class="new-trip-field-body">
+            <label for="adblueCheck">AdBlue (l)</label>
+            <label class="check-row new-trip-switch-row">
+              <input type="checkbox" id="adblueCheck">
+              <span>Tankoval jsem AdBlue</span>
+            </label>
+            <div id="adblueSection" class="hidden new-trip-subfield">
+              <input type="number" id="adblueAmount" step="0.01" placeholder="Zadejte litry" class="input" inputmode="decimal">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card new-trip-field new-trip-full new-trip-note-card">
+          <div class="new-trip-icon ref-new-note"><svg class="new-summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <path d="M14 9h22l7 7v31H14z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M36 9v10h10M21 28h15M21 36h11" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+    </svg></div>
+          <div class="new-trip-field-body">
+            <label for="tripNote">Trasa/Poznámka</label>
+            <textarea id="tripNote" class="input note" placeholder="Trasa nebo poznámka k jízdě..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="save-button new-trip-save" id="saveTripButton" onclick="saveTripFromForm('${vehicleName}')">
+        ✓ &nbsp; ULOŽIT JÍZDU
+      </button>
+
+    </div>
+
+  `;
+
+  // =========================
+  // DATUM
+  // =========================
+
+  document.getElementById("tripDate").valueAsDate =
+    new Date();
+
+
+  // =========================
+  // INFORMACE O VOZIDLE
+  // =========================
+
+  google.script.run
+
+    .withSuccessHandler(function(vehicle) {
+
+      // =========================
+      // ADBLUE
+      // =========================
+
+      const adblueCard =
+        document.getElementById("adblueCard");
+
+      if (adblueCard) {
+
+        if (
+          vehicle &&
+          vehicle.adBlue === true
+        ) {
+
+          adblueCard.style.display =
+            "block";
+
+        } else {
+
+          adblueCard.style.display =
+            "none";
+
+        }
+
+      }
+
+
+      // =========================
+      // VÝCHOZÍ TANKOVACÍ KARTA
+      // =========================
+
+      const fuelCard =
+        document.getElementById("fuelCard");
+
+      if (
+        fuelCard &&
+        vehicle &&
+        vehicle.defaultCard
+      ) {
+
+        const cardValue =
+          String(vehicle.defaultCard)
+            .trim()
+            .toLowerCase();
+
+
+        for (
+          let i = 0;
+          i < fuelCard.options.length;
+          i++
+        ) {
+
+          const optionValue =
+            fuelCard.options[i].text
+              .trim()
+              .toLowerCase();
+
+
+          if (
+            optionValue === cardValue
+          ) {
+
+            fuelCard.selectedIndex = i;
+
+            break;
+
+          }
+
+        }
+
+      }
+
+    })
+
+    .withFailureHandler(function(error) {
+
+      console.error(
+        "Chyba při načítání nastavení vozidla:",
+        error
+      );
+
+    })
+
+    .getVehicleInfo(vehicleName);
+
+
+  // =========================
+  // TANKOVÁNÍ
+  // =========================
+
+  const fuelCheck =
+    document.getElementById("fuelCheck");
+
+  const fuelSection =
+    document.getElementById("fuelSection");
+
+
+  fuelCheck.addEventListener(
+    "change",
+    function() {
+
+      if (this.checked) {
+
+        fuelSection.classList.remove("hidden");
+
+        const fuelAmount =
+          document.getElementById("fuelAmount");
+
+        // Po otevření pole okamžitě nastavíme kurzor do množství.
+        // Na mobilu se tím otevře numerická klávesnice.
+        if (fuelAmount) {
+          fuelAmount.focus();
+        }
+
+      } else {
+
+        fuelSection.classList.add("hidden");
+
+        document.getElementById(
+          "fuelAmount"
+        ).value = "";
+
+      }
+
+    }
+  );
+
+
+  // =========================
+  // ADBLUE
+  // =========================
+
+  const adblueCheck =
+    document.getElementById("adblueCheck");
+
+  const adblueSection =
+    document.getElementById("adblueSection");
+
+
+  adblueCheck.addEventListener(
+    "change",
+    function() {
+
+      if (this.checked) {
+
+        adblueSection.classList.remove("hidden");
+
+        const adblueAmount =
+          document.getElementById("adblueAmount");
+
+        // Po otevření pole okamžitě nastavíme kurzor do množství.
+        // Na mobilu se tím otevře numerická klávesnice.
+        if (adblueAmount) {
+          adblueAmount.focus();
+        }
+
+      } else {
+
+        adblueSection.classList.add("hidden");
+
+        document.getElementById(
+          "adblueAmount"
+        ).value = "";
+
+      }
+
+    }
+  );
+
+
+  // =========================
+  // POSLEDNÍ STAV KM
+  // =========================
+
+  google.script.run
+
+    .withSuccessHandler(function(lastKm) {
+
+      const lastKmElement =
+        document.getElementById("lastKm");
+
+
+      if (lastKmElement) {
+
+        lastKmElement.textContent =
+          formatNumber(lastKm) + " km";
+
+      }
+
+      const lastKmDisplay =
+        document.getElementById("lastKmDisplay");
+
+      if (lastKmDisplay) {
+
+        lastKmDisplay.textContent =
+          formatNumber(lastKm) + " km";
+
+      }
+
+
+      const endKmInput =
+        document.getElementById("endKm");
+
+      const distance =
+        document.getElementById("distance");
+
+      function updateDistance() {
+
+        if (!distance || !endKmInput) return;
+
+        const rawValue =
+          endKmInput.value.trim();
+
+        if (rawValue === "") {
+          distance.textContent =
+            "Zadejte konečný stav km";
+          distance.style.color =
+            "#64748b";
+          return;
+        }
+
+        const endKm =
+          Number(rawValue);
+
+        if (!Number.isFinite(endKm) || endKm < 0) {
+          distance.textContent =
+            "⚠️ Zkontrolujte zadaný stav km";
+          distance.style.color =
+            "#dc2626";
+          return;
+        }
+
+        const difference =
+          endKm - Number(lastKm);
+
+        if (difference < 0) {
+          distance.textContent =
+            "⚠️ Jízda je v mínusu: " +
+            formatNumber(Math.abs(difference)) + " km";
+          distance.style.color =
+            "#dc2626";
+          return;
+        }
+
+        if (difference > 5000) {
+          distance.textContent =
+            "⚠️ Neobvykle vysoký nájezd: " +
+            formatNumber(difference) + " km";
+          distance.style.color =
+            "#dc2626";
+          return;
+        }
+
+        distance.textContent =
+          "Ujeto: " + formatNumber(difference) + " km";
+        distance.style.color =
+          "#16a34a";
+      }
+
+      endKmInput.addEventListener(
+        "input",
+        updateDistance
+      );
+
+      endKmInput.addEventListener(
+        "change",
+        updateDistance
+      );
+
+      updateDistance();
+
+
+    })
+
+    .withFailureHandler(function(error) {
+
+      const lastKmElement =
+        document.getElementById("lastKm");
+
+
+      if (lastKmElement) {
+
+        lastKmElement.textContent =
+          "Nelze načíst";
+
+      }
+
+
+      console.error(
+        "Chyba getLastMileage:",
+        error
+      );
+
+      alert(
+        "Chyba při načítání posledního stavu KM:\n\n" +
+        error.message
+      );
+
+    })
+
+    .getLastMileage(vehicleName);
+
+}
+
+    function saveTripFromForm(vehicleName) {
+
+      const date =
+    document.getElementById("tripDate").value;
+
+  const endKm =
+    Number(document.getElementById("endKm").value);
+
+  const lastKmDisplay =
+    document.getElementById("lastKmDisplay");
+
+  const lastKmText =
+    lastKmDisplay
+      ? lastKmDisplay.textContent
+      : document.getElementById("lastKm").textContent;
+
+  const startKm =
+    Number(lastKmText.replace(/[^\d]/g, ""));
+
+  const fuelCheck =
+    document.getElementById("fuelCheck").checked;
+
+  const fuelAmount =
+    document.getElementById("fuelAmount").value;
+
+  const fuelCard =
+    document.getElementById("fuelCard").value;
+
+  const adblueCheck =
+    document.getElementById("adblueCheck").checked;
+
+  const adblueAmount =
+    document.getElementById("adblueAmount").value;
+
+  const workTrip =
+    document.getElementById("workTrip").checked;
+
+  const note =
+    document.getElementById("tripNote").value;
+
+
+  if (!date) {
+
+    alert("Vyber datum jízdy.");
+
+    return;
+
+  }
+
+
+  if (!endKm) {
+
+    alert("Zadej konečný stav KM.");
+
+    return;
+
+  }
+
+
+  if (endKm < startKm) {
+
+    alert(
+      "Konečný stav KM nemůže být menší než poslední stav."
+    );
+
+    return;
+
+  }
+
+
+  if (fuelCheck && !fuelAmount) {
+
+    alert(
+      "Zadej množství natankovaných litrů."
+    );
+
+    return;
+
+  }
+
+
+  if (adblueCheck && !adblueAmount) {
+
+    alert(
+      "Zadej množství natankovaného AdBlue."
+    );
+
+    return;
+
+  }
+
+
+  // Tlačítko zablokujeme až po úspěšné validaci.
+  const saveButton =
+    document.getElementById("saveTripButton");
+
+  if (saveButton) {
+
+    saveButton.disabled = true;
+
+    saveButton.textContent =
+      "⏳ UKLÁDÁM...";
+
+  }
+
+
+    const drivenKm = endKm - startKm;
+
+  if (drivenKm < 0) {
+    alert(
+      "Konečný stav KM nemůže být menší než poslední stav."
+    );
+    return;
+  }
+
+  if (drivenKm > 5000) {
+    alert(
+      "Zadaný počet kilometrů je neobvykle vysoký. Zkontroluj prosím konečný stav KM."
+    );
+    return;
+  }
+
+const data = {
+
+    vehicleName: vehicleName,
+
+    date: date,
+
+    startKm: startKm,
+
+    endKm: endKm,
+
+    phm:
+      fuelCheck
+        ? fuelAmount
+        : "",
+
+    card:
+      fuelCheck
+        ? fuelCard
+        : "",
+
+    adblue:
+      adblueCheck
+        ? adblueAmount
+        : "",
+
+    purpose:
+      workTrip
+        ? "Pracovně"
+        : "Soukromě",
+
+    note: note
+
+  };
+
+
+  google.script.run
+
+    .withSuccessHandler(function(result) {
+
+  const saveButton =
+    document.getElementById("saveTripButton");
+
+  if (saveButton) {
+
+    saveButton.textContent =
+      "✅ ULOŽENO";
+
+  }
+
+  setTimeout(function() {
+
+    showTrips(vehicleName);
+
+  }, 700);
+
+})
+
+    .withFailureHandler(function(error) {
+
+  const saveButton =
+    document.getElementById("saveTripButton");
+
+  if (saveButton) {
+
+    saveButton.disabled = false;
+
+    saveButton.textContent =
+      "💾 ULOŽIT JÍZDU";
+
+  }
+
+  alert(
+    "Jízdu se nepodařilo uložit:\n\n" +
+    error.message
+  );
+
+  console.error(error);
+
+})
+
+    .saveNewTrip(data);
+
+}
+
+    function showService(vehicleName) {
+  setBottomNavVisible(true);
+  setActiveNav("Service");
+  updateServiceNavWarning(vehicleName);
+
+  document.getElementById("screen").innerHTML = `
+    <div class="content service-page">
+
+      <div class="service-hero">
+        <div class="service-hero-title">
+          <span class="service-hero-icon">🛠️</span>
+          <div>
+            <div class="service-title">Servis / hlášení</div>
+            <div class="service-subtitle">Nahlášení problému na vozidle</div>
+          </div>
+        </div>
+        <div class="service-month">${getCurrentMonthName()}</div>
+      </div>
+
+      <div class="service-vehicle-card">
+        <div class="service-vehicle-icon">🚐</div>
+        <div>
+          <div class="service-vehicle-name">${vehicleName}</div>
+          <div class="service-vehicle-label">Aktuálně vybrané vozidlo</div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <div class="section-title">🛠️ Nahlásit problém</div>
+        <div class="driver-name-field">
+          <label class="form-label" for="serviceDriver">Jméno řidiče</label>
+          <input type="text" id="serviceDriver" class="input" placeholder="Napište své jméno">
+        </div>
+        <label class="form-label" for="serviceProblem">Popis problému</label>
+        <textarea id="serviceProblem" class="input note" placeholder="Popište problém na vozidle..."></textarea>
+      </div>
+
+      <div class="form-card">
+        <div class="section-title">📷 Fotografie</div>
+        <div class="service-photo-actions">
+          <button type="button" class="service-photo-button" onclick="openServiceCamera()">
+            <span class="service-photo-button-icon">📷</span>
+            <span>Vyfotit</span>
+          </button>
+          <button type="button" class="service-photo-button" onclick="openServiceGallery()">
+            <span class="service-photo-button-icon">🖼️</span>
+            <span>Galerie</span>
+          </button>
+        </div>
+        <input type="file" id="servicePhoto" accept="image/*" class="input" style="display:none">
+        <div id="servicePhotoName" class="form-hint">Fotografie je volitelná.</div>
+      </div>
+
+      <button type="button" class="save-button" onclick="submitServiceReport('${vehicleName}')">
+        🛠️ ODESLAT HLÁŠENÍ
+      </button>
+
+      <div id="serviceMessage" style="margin-top:12px;text-align:center;"></div>
+    </div>
+  `;
+}
+
+function submitServiceReport(vehicleName) {
+  const problemInput = document.getElementById("serviceProblem");
+  const photoInput = document.getElementById("servicePhoto");
+  const message = document.getElementById("serviceMessage");
+
+  const problem = problemInput ? problemInput.value.trim() : "";
+  const driverInput = document.getElementById("serviceDriver");
+  const driver = driverInput ? driverInput.value.trim() : "";
+
+  if (!driver) {
+    alert("Napište prosím své jméno.");
+    if (driverInput) driverInput.focus();
+    return;
+  }
+
+  if (!problem) {
+    alert("Popište prosím problém na vozidle.");
+    return;
+  }
+
+  const button = document.querySelector('.save-button[onclick*="submitServiceReport"]');
+
+  if (button) {
+    button.disabled = true;
+    button.textContent = "⏳ ODESÍLÁM...";
+  }
+
+  if (message) {
+    message.textContent = "Odesílám hlášení...";
+  }
+
+  function sendReport(photoData) {
+    const data = {
+      vehicleName: vehicleName,
+      driver: driver,
+      problem: problem,
+      photo: photoData || null
+    };
+
+    google.script.run
+      .withSuccessHandler(function(result) {
+        if (button) {
+          button.textContent = "✅ ODESLÁNO";
+        }
+
+        if (message) {
+          message.textContent = "Hlášení bylo úspěšně odesláno.";
+        }
+
+        setTimeout(function() {
+          showVehicle(vehicleName);
+        }, 800);
+      })
+      .withFailureHandler(function(error) {
+        if (button) {
+          button.disabled = false;
+          button.textContent = "🛠️ ODESLAT HLÁŠENÍ";
+        }
+
+        if (message) {
+          message.textContent = "";
+        }
+
+        alert(
+          "Chyba při odesílání hlášení:\n\n" +
+          (error && error.message ? error.message : error)
+        );
+
+        console.error("Chyba servisního hlášení:", error);
+      })
+      .saveServiceReport(data);
+  }
+
+  // Bez fotografie odešleme hlášení rovnou.
+  if (!photoInput || !photoInput.files || photoInput.files.length === 0) {
+    sendReport(null);
+    return;
+  }
+
+  // S fotografií ji nejdříve převedeme na Base64 a následně odešleme.
+  const file = photoInput.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function(event) {
+    const result = event.target.result || "";
+    const comma = result.indexOf(",");
+
+    if (comma < 0) {
+      if (button) {
+        button.disabled = false;
+        button.textContent = "🛠️ ODESLAT HLÁŠENÍ";
+      }
+      if (message) message.textContent = "";
+      alert("Fotografii se nepodařilo připravit k odeslání.");
+      return;
+    }
+
+    sendReport({
+      name: file.name,
+      type: file.type || "image/jpeg",
+      data: result.substring(comma + 1)
+    });
+  };
+
+  reader.onerror = function() {
+    if (button) {
+      button.disabled = false;
+      button.textContent = "🛠️ ODESLAT HLÁŠENÍ";
+    }
+    if (message) message.textContent = "";
+    alert("Nepodařilo se načíst fotografii.");
+  };
+
+  reader.readAsDataURL(file);
+}
+
+
+    function showTrips(vehicleName) {
+  setBottomNavVisible(true);
+  setActiveNav("Trips");
+  updateServiceNavWarning(vehicleName);
+
+  document.getElementById("screen").innerHTML = `
+    <div class="content trips-page">
+
+      <div class="trips-hero">
+        <div class="trips-hero-title">
+          <span class="trips-hero-icon">📋</span>
+          <div>
+            <div class="trips-title">Přehled jízd</div>
+            <div class="trips-subtitle">Evidence jízd vozidla</div>
+          </div>
+        </div>
+        <div class="trips-current-month">${getCurrentMonthName()}</div>
+      </div>
+
+      <div class="trips-vehicle-card">
+        <div class="trips-vehicle-icon">🚐</div>
+        <div class="trips-vehicle-text">
+          <div class="trips-vehicle-name">${vehicleName}</div>
+          <div class="trips-vehicle-action">Aktuálně vybrané vozidlo</div>
+        </div>
+      </div>
+
+      <div id="tripsLoading" class="loading">
+        Načítám jízdy...
+      </div>
+
+      <div id="tripsContainer"></div>
+
+    </div>
+  `;
+
+  google.script.run
+  .withSuccessHandler(function(trips) {
+    renderTrips(trips, vehicleName);
+  })
+  .withFailureHandler(function(error) {
+    alert("CHYBA: " + error.message);
+    console.error(error);
+  })
+  .getTripsForVehicle(vehicleName);
+}
+
+function renderTrips(trips, vehicleName) {
+
+  const loading = document.getElementById("tripsLoading");
+  const container = document.getElementById("tripsContainer");
+
+  if (loading) loading.remove();
+
+  if (!trips || trips.length === 0) {
+    container.innerHTML = `
+      <div class="month-header trips-month-card">
+        <div class="month-summary-heading">
+          <strong>Souhrn za měsíc</strong>
+          <span>${getCurrentMonthName()}</span>
+        </div>
+        <div class="month-stats">
+          <div class="month-stat">
+            <span class="month-stat-icon ref-icon ref-road"><svg class="summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <path d="M18 7h20L31 49H25L18 7Z" fill="currentColor"/>
+      <path d="M27 11h3v8h-3zM27 24h3v8h-3zM27 37h3v8h-3z" fill="white"/>
+    </svg></span>
+            <strong>0</strong>
+            <small>jízd</small>
+          </div>
+          <div class="month-stat">
+            <span class="month-stat-icon ref-icon ref-map"><svg class="summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <path d="M21 8c-7.2 0-13 5.8-13 13 0 9.7 13 27 13 27s13-17.3 13-27c0-7.2-5.8-13-13-13Z" fill="currentColor"/>
+      <circle cx="21" cy="21" r="5" fill="white"/>
+      <path d="M39 21c-5 0-9 4-9 9 0 6.8 9 19 9 19s9-12.2 9-19c0-5-4-9-9-9Z" fill="currentColor"/>
+      <circle cx="39" cy="30" r="3.4" fill="white"/>
+    </svg></span>
+            <strong>0</strong>
+            <small>km</small>
+          </div>
+        </div>
+      </div>
+
+      <button class="new-trip-button" onclick="showVehicle('${vehicleName}')">
+        ＋ NOVÁ JÍZDA
+      </button>
+
+      <div class="empty-card trips-empty">
+        Zatím nejsou evidovány žádné jízdy.
+      </div>
+    `;
+    return;
+  }
+
+  let totalKm = 0;
+  let totalFuel = 0;
+  let totalAdBlue = 0;
+
+  trips.forEach(function(trip) {
+    totalKm += Number(trip.dayKm) || 0;
+    totalFuel += Number(trip.phm) || 0;
+    totalAdBlue += Number(trip.adblue) || 0;
+  });
+
+  const averageConsumption =
+    totalKm > 0
+      ? (totalFuel / totalKm * 100)
+      : 0;
+
+  let html = `
+    <div class="month-header trips-month-card">
+      <div class="month-summary-heading">
+        <strong>Souhrn za měsíc</strong>
+        <span>${getCurrentMonthName()}</span>
+      </div>
+
+      <div class="month-stats">
+
+        <div class="month-stat">
+          <span class="month-stat-icon ref-icon ref-road"><svg class="summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <path d="M18 7h20L31 49H25L18 7Z" fill="currentColor"/>
+      <path d="M27 11h3v8h-3zM27 24h3v8h-3zM27 37h3v8h-3z" fill="white"/>
+    </svg></span>
+          <strong>${trips.length}</strong>
+          <small>jízd</small>
+        </div>
+
+        <div class="month-stat">
+          <span class="month-stat-icon ref-icon ref-map"><svg class="summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <path d="M21 8c-7.2 0-13 5.8-13 13 0 9.7 13 27 13 27s13-17.3 13-27c0-7.2-5.8-13-13-13Z" fill="currentColor"/>
+      <circle cx="21" cy="21" r="5" fill="white"/>
+      <path d="M39 21c-5 0-9 4-9 9 0 6.8 9 19 9 19s9-12.2 9-19c0-5-4-9-9-9Z" fill="currentColor"/>
+      <circle cx="39" cy="30" r="3.4" fill="white"/>
+    </svg></span>
+          <strong>${formatNumber(totalKm)}</strong>
+          <small>km</small>
+        </div>
+
+        <div class="month-stat">
+          <span class="month-stat-icon ref-icon ref-fuel"><svg class="summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <rect x="11" y="11" width="23" height="35" rx="3" fill="none" stroke="currentColor" stroke-width="4"/>
+      <rect x="16" y="16" width="13" height="9" rx="1" fill="currentColor"/>
+      <path d="M34 17h4c4 0 6 3 6 7v9l5 5v6c0 2-1.5 3-3.5 3S42 42 42 40v-5l-3-3v-9c0-2-1-3-3-3h-2v-3Z" fill="currentColor"/>
+      <path d="M46 19v-5c0-2-1.5-3-3-3" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    </svg></span>
+          <strong>${formatNumber(totalFuel)}</strong>
+          <small>litrů</small>
+        </div>
+
+        <div class="month-stat">
+          <span class="month-stat-icon ref-icon ref-adblue">
+            <svg class="summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+              <path d="M28 7C24 14 16 21 16 31c0 7 5.4 12 12 12s12-5 12-12C40 21 32 14 28 7Z"
+                    fill="currentColor"/>
+              <path d="M24 31c0-4 2.5-7.2 5.5-9.8-1 3.5 1.5 5.8 1.5 9.2 0 3.2-2 5.3-4.1 5.3S24 34.2 24 31Z"
+                    fill="white" opacity=".9"/>
+            </svg>
+          </span>
+          <strong>${formatNumber(totalAdBlue)}</strong>
+          <small>l AdBlue</small>
+        </div>
+
+        <div class="month-stat">
+          <span class="month-stat-icon ref-icon ref-chart"><svg class="summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <rect x="8" y="31" width="9" height="17" rx="2" fill="currentColor"/>
+      <rect x="23.5" y="21" width="9" height="27" rx="2" fill="currentColor"/>
+      <rect x="39" y="9" width="9" height="39" rx="2" fill="currentColor"/>
+    </svg></span>
+          <strong>${averageConsumption > 0 ? averageConsumption.toFixed(2) : "-"}</strong>
+          <small>l / 100 km</small>
+        </div>
+
+      </div>
+    </div>
+
+    <button class="new-trip-button" onclick="showVehicle('${vehicleName}')">
+      ＋ NOVÁ JÍZDA
+    </button>
+  `;
+
+  trips.slice().reverse().forEach(function(trip) {
+
+    const date = new Date(trip.date);
+
+    const day =
+      String(date.getDate()).padStart(2, "0");
+
+    const monthNames = [
+      "LED","ÚNO","BŘE","DUB","KVĚ","ČVN",
+      "ČVC","SRP","ZÁŘ","ŘÍJ","LIS","PRO"
+    ];
+
+    const month = monthNames[date.getMonth()];
+    const year = date.getFullYear();
+
+    html += `
+      <div
+        class="trip-card"
+        onclick='showTripDetail(
+          ${JSON.stringify(trip)},
+          ${JSON.stringify(vehicleName)}
+        )'
+      >
+
+        <div class="trip-date">
+          <strong>${day}</strong>
+          <span>${month}</span>
+          <small>${year}</small>
+        </div>
+
+        <div class="trip-main">
+          <div class="trip-info">
+            🚗 ${formatNumber(trip.dayKm)} km
+          </div>
+        </div>
+
+        <div class="trip-arrow">›</div>
+
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+function getCurrentMonthName() {
+
+  const months = [
+    "Leden","Únor","Březen","Duben","Květen","Červen",
+    "Červenec","Srpen","Září","Říjen","Listopad","Prosinec"
+  ];
+
+  const now = new Date();
+
+  return months[now.getMonth()] + " " + now.getFullYear();
+}
+
+
+function showTripDetail(trip, vehicleName) {
+
+  document.getElementById("screen").innerHTML = `
+
+    <div class="content trip-detail-page">
+
+      <div class="trip-detail-hero">
+
+        <div class="trip-detail-title-row">
+
+          <button
+            type="button"
+            class="trip-detail-back"
+            onclick="showTrips('${vehicleName}')">
+            ←
+          </button>
+
+          <div>
+            <div class="trip-detail-heading">
+              Detail jízdy
+            </div>
+
+            <div class="trip-detail-subtitle">
+              Podrobnosti zaznamenané jízdy
+            </div>
+          </div>
+
+        </div>
+
+        <div class="trip-detail-month">
+          ${getCurrentMonthName()}
+        </div>
+
+      </div>
+
+
+      <div class="trip-detail-vehicle">
+
+        <div class="trip-detail-vehicle-icon">
+          🚐
+        </div>
+
+        <div>
+          <div class="trip-detail-vehicle-name">
+            ${vehicleName}
+          </div>
+
+          <div class="trip-detail-vehicle-label">
+            Vozidlo
+          </div>
+        </div>
+
+      </div>
+
+
+      <div class="trip-detail-card">
+
+        <div class="trip-detail-card-title">
+          <div class="trip-detail-card-icon"><svg class="new-summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <rect x="10" y="13" width="36" height="34" rx="6" fill="none" stroke="currentColor" stroke-width="4"/>
+      <path d="M10 23h36" stroke="currentColor" stroke-width="4"/>
+      <path d="M19 8v10M37 8v10" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+      <circle cx="20" cy="31" r="2.5" fill="currentColor"/><circle cx="28" cy="31" r="2.5" fill="currentColor"/><circle cx="36" cy="31" r="2.5" fill="currentColor"/>
+      <circle cx="20" cy="39" r="2.5" fill="currentColor"/><circle cx="28" cy="39" r="2.5" fill="currentColor"/>
+    </svg></div>
+          <strong>Datum jízdy</strong>
+        </div>
+
+        <div class="trip-detail-date">
+          ${trip.date}
+        </div>
+
+      </div>
+
+
+      <div class="trip-detail-card">
+
+        <div class="trip-detail-card-title">
+          <div class="trip-detail-card-icon"><svg class="new-summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <path d="M10 38a18 18 0 1 1 36 0" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+      <path d="M28 28l10-8" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="28" cy="28" r="4" fill="currentColor"/>
+      <path d="M15 38h5M36 38h5M28 17v5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    </svg></div>
+          <strong>Stav tachometru</strong>
+        </div>
+
+        <div class="trip-detail-km-grid">
+
+          <div class="trip-detail-km">
+            <small>Začátek</small>
+            <strong>${formatNumber(trip.startKm)} km</strong>
+          </div>
+
+          <div class="trip-detail-km">
+            <small>Konec</small>
+            <strong>${formatNumber(trip.endKm)} km</strong>
+          </div>
+
+          <div class="trip-detail-km total">
+            <small>Ujeto celkem</small>
+            <strong>${formatNumber(trip.dayKm)} km</strong>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      ${
+        trip.phm
+        ? `
+          <div class="trip-detail-card fuel">
+
+            <div class="trip-detail-card-title">
+              <div class="trip-detail-card-icon"><svg class="new-summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <rect x="11" y="11" width="23" height="35" rx="3" fill="none" stroke="currentColor" stroke-width="4"/>
+      <rect x="16" y="16" width="13" height="9" rx="1" fill="currentColor"/>
+      <path d="M34 17h4c4 0 6 3 6 7v9l5 5v6c0 2-1.5 3-3.5 3S42 42 42 40v-5l-3-3v-9c0-2-1-3-3-3h-2v-3Z" fill="currentColor"/>
+      <path d="M46 19v-5c0-2-1.5-3-3-3" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+    </svg></div>
+              <strong>Tankování</strong>
+            </div>
+
+            <div class="trip-detail-info-row">
+              <span>Množství</span>
+              <strong>${trip.phm} l</strong>
+            </div>
+
+            ${
+              trip.card
+              ? `
+                <div class="trip-detail-info-row">
+                  <span>Tankovací karta</span>
+                  <strong>${trip.card}</strong>
+                </div>
+              `
+              : ""
+            }
+
+          </div>
+        `
+        : ""
+      }
+
+
+      ${
+        trip.adblue
+        ? `
+          <div class="trip-detail-card adblue">
+
+            <div class="trip-detail-card-title">
+              <div class="trip-detail-card-icon"><svg class="new-summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <path d="M28 7C24 14 16 21 16 31c0 7 5.4 12 12 12s12-5 12-12C40 21 32 14 28 7Z" fill="currentColor"/>
+      <path d="M24 31c0-4 2.5-7.2 5.5-9.8-1 3.5 1.5 5.8 1.5 9.2 0 3.2-2 5.3-4.1 5.3S24 34.2 24 31Z" fill="white" opacity=".9"/>
+    </svg></div>
+              <strong>AdBlue</strong>
+            </div>
+
+            <div class="trip-detail-info-row">
+              <span>Množství</span>
+              <strong>${trip.adblue} l</strong>
+            </div>
+
+          </div>
+        `
+        : ""
+      }
+
+
+      <div class="trip-detail-card">
+
+        <div class="trip-detail-card-title">
+          <div class="trip-detail-card-icon"><svg class="new-summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <rect x="10" y="17" width="36" height="29" rx="5" fill="none" stroke="currentColor" stroke-width="4"/>
+      <path d="M21 17v-4c0-2 2-4 4-4h6c2 0 4 2 4 4v4" fill="none" stroke="currentColor" stroke-width="4"/>
+      <path d="M10 28h36M25 28v5h6v-5" fill="none" stroke="currentColor" stroke-width="4"/>
+    </svg></div>
+          <strong>Účel jízdy</strong>
+        </div>
+
+        <div class="trip-detail-info-row">
+          <span>Typ jízdy</span>
+          <strong>${trip.purpose || "Neuvedeno"}</strong>
+        </div>
+
+      </div>
+
+
+      ${
+        trip.note
+        ? `
+          <div class="trip-detail-card">
+
+            <div class="trip-detail-card-title">
+              <div class="trip-detail-card-icon"><svg class="new-summary-svg" viewBox="0 0 56 56" aria-hidden="true">
+      <path d="M14 9h22l7 7v31H14z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M36 9v10h10M21 28h15M21 36h11" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+    </svg></div>
+              <strong>Trasa/Poznámka</strong>
+            </div>
+
+            <div class="trip-detail-note">
+              ${trip.note}
+            </div>
+
+          </div>
+        `
+        : ""
+      }
+
+
+    </div>
+
+  `;
+
+}
+
+function showTechnicalStatus(vehicleName) {
+  setBottomNavVisible(true);
+  setActiveNav("State");
+  document.getElementById("screen").innerHTML = `
+    <div class="content technical-page">
+
+      <div class="technical-hero">
+        <div class="technical-title-row">
+          <button class="technical-back" onclick="showVehicleList()">←</button>
+          <div>
+            <div class="technical-heading">Technický stav</div>
+            <div class="technical-subtitle">Přehled důležitých termínů a servisu</div>
+          </div>
+        </div>
+        <div class="technical-month">${getCurrentMonthName()}</div>
+      </div>
+
+      <div class="technical-vehicle">
+        <div class="technical-vehicle-icon">
+          <svg viewBox="0 0 56 56" aria-hidden="true">
+            <path d="M12 34l4-15c.7-2.5 2.9-4 5.5-4h13c2.6 0 4.8 1.5 5.5 4l4 15v8H12z"
+                  fill="none" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"/>
+            <path d="M17 27h22M18 35h4M34 35h4" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+            <circle cx="19" cy="42" r="3.5" fill="currentColor"/>
+            <circle cx="37" cy="42" r="3.5" fill="currentColor"/>
+          </svg>
+        </div>
+        <div>
+          <div class="technical-vehicle-name">${vehicleName}</div>
+          <div class="technical-vehicle-label">Vozidlo</div>
+        </div>
+      </div>
+
+      <div id="technicalStatus">
+        <div class="empty-card">⏳ Načítám stav vozidla...</div>
+      </div>
+
+    </div>
+  `;
+
+  google.script.run
+    .withSuccessHandler(renderTechnicalStatus)
+    .withFailureHandler(function(error) {
+      document.getElementById("technicalStatus").innerHTML = `
+        <div class="empty-card">
+          ❌ ${error.message}
+        </div>
+      `;
+    })
+    .getTechnicalStatus(vehicleName);
+}
+
+function renderTechnicalStatus(data) {
+  const container = document.getElementById("technicalStatus");
+
+  // =========================
+  // POMOCNÉ FUNKCE
+  // =========================
+
+  function getDateStatus(dateValue) {
+    if (!dateValue) {
+      return {
+        className: "status-gray",
+        icon: "⚪",
+        text: "Neuvedeno"
+      };
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const date = new Date(dateValue);
+    date.setHours(0, 0, 0, 0);
+
+    const difference =
+      Math.ceil((date - today) / (1000 * 60 * 60 * 24));
+
+    if (difference < 0) {
+      return {
+        className: "status-red",
+        icon: "🔴",
+        text: "Po termínu"
+      };
+    }
+
+    if (difference <= 30) {
+      return {
+        className: "status-orange",
+        icon: "🟠",
+        text: "Blíží se termín"
+      };
+    }
+
+    return {
+      className: "status-green",
+      icon: "🟢",
+      text: "V pořádku"
+    };
+  }
+
+
+  function getOilStatus(currentKm, nextKm) {
+    if (!nextKm || !currentKm) {
+      return {
+        className: "status-gray",
+        icon: "⚪",
+        text: "Neuvedeno"
+      };
+    }
+
+    const remaining =
+      Number(nextKm) - Number(currentKm);
+
+    if (remaining < 0) {
+      return {
+        className: "status-red",
+        icon: "🔴",
+        text: "Po termínu",
+        remaining: remaining
+      };
+    }
+
+    if (remaining <= 4000) {
+      return {
+        className: "status-orange",
+        icon: "🟠",
+        text: "Blíží se výměna",
+        remaining: remaining
+      };
+    }
+
+    return {
+      className: "status-green",
+      icon: "🟢",
+      text: "V pořádku",
+      remaining: remaining
+    };
+  }
+
+
+  // =========================
+  // DÁLNIČNÍ ZNÁMKA
+  // =========================
+
+  const vignetteStatus =
+    getDateStatus(data.vignetteUntil);
+
+
+  // =========================
+  // STK
+  // =========================
+
+  const stkStatus =
+    getDateStatus(data.stkUntil);
+
+
+  // =========================
+  // OLEJ
+  // =========================
+
+  const currentKm =
+    data.currentKm || 0;
+
+  const oilStatus =
+    getOilStatus(
+      currentKm,
+      data.oilNextKm
+    );
+
+
+  // =========================
+  // SERVIS
+  // =========================
+
+  const serviceStatus =
+    getDateStatus(data.serviceNext);
+
+
+  // =========================
+  // VYKRESLENÍ
+  // =========================
+
+  container.innerHTML = `
+
+    <div class="technical-card ${vignetteStatus.className}">
+
+      <div class="technical-icon">
+        <svg viewBox="0 0 56 56" aria-hidden="true">
+          <path d="M16 8h24L33 48H23z" fill="currentColor"/>
+          <path d="M27 11h3v8h-3zM26.5 24h3v8h-3zM26 37h3v8h-3z" fill="white"/>
+        </svg>
+      </div>
+
+      <div class="technical-info">
+
+        <div class="technical-title">
+          Dálniční známka
+        </div>
+
+        <div class="technical-value">
+          ${formatTechnicalDate(data.vignetteUntil)}
+        </div>
+
+        <div class="technical-status">
+          ${vignetteStatus.icon}
+          ${vignetteStatus.text}
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="technical-card ${stkStatus.className}">
+
+      <div class="technical-icon">
+        <svg viewBox="0 0 56 56" aria-hidden="true">
+          <rect x="12" y="10" width="32" height="38" rx="5" fill="none" stroke="currentColor" stroke-width="4"/>
+          <rect x="21" y="7" width="14" height="7" rx="3" fill="currentColor"/>
+          <path d="M19 24h18M19 32h18M19 40h12" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <div class="technical-info">
+
+        <div class="technical-title">
+          STK
+        </div>
+
+        <div class="technical-value">
+          ${formatTechnicalDate(data.stkUntil)}
+        </div>
+
+        <div class="technical-status">
+          ${stkStatus.icon}
+          ${stkStatus.text}
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="technical-card ${oilStatus.className}">
+
+      <div class="technical-icon">
+        <svg viewBox="0 0 56 56" aria-hidden="true">
+          <path d="M18 10h20v37H18z" fill="none" stroke="currentColor" stroke-width="4"/>
+          <path d="M22 15h12v10H22z" fill="currentColor"/>
+          <path d="M38 19h4c4 0 6 3 6 7v10c0 3 2 4 4 4v3c-5 0-8-2-8-7V27c0-2-1-3-3-3h-3z" fill="currentColor"/>
+        </svg>
+      </div>
+
+      <div class="technical-info">
+
+        <div class="technical-title">
+          Výměna oleje
+        </div>
+
+        <div class="technical-value">
+          ${data.oilNextKm
+            ? formatNumber(data.oilNextKm) + " km"
+            : "Neuvedeno"}
+        </div>
+
+        <div class="technical-sub">
+          Poslední výměna:
+          ${data.oilLastKm
+            ? formatNumber(data.oilLastKm) + " km"
+            : "Neuvedeno"}
+        </div>
+
+        <div class="technical-status">
+          ${oilStatus.icon}
+          ${oilStatus.text}
+          ${
+            oilStatus.remaining !== undefined
+              ? oilStatus.remaining >= 0
+                ? " • zbývá " +
+                  formatNumber(oilStatus.remaining) +
+                  " km"
+                : " • překročeno o " +
+                  formatNumber(Math.abs(oilStatus.remaining)) +
+                  " km"
+              : ""
+          }
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="technical-card ${serviceStatus.className}">
+
+      <div class="technical-icon">
+        <svg viewBox="0 0 56 56" aria-hidden="true">
+          <path d="M35 10a11 11 0 0 0 1 14L20 40a5 5 0 1 0 7 7l16-16a11 11 0 0 0 3-12l-8 8-6-2-2-6 8-9a11 11 0 0 0-3-0Z" fill="currentColor"/>
+          <circle cx="23" cy="42" r="4" fill="white"/>
+        </svg>
+      </div>
+
+      <div class="technical-info">
+
+        <div class="technical-title">
+          Servis
+        </div>
+
+        <div class="technical-value">
+          ${formatTechnicalDate(data.serviceNext)}
+        </div>
+
+        <div class="technical-sub">
+          Poslední servis:
+          ${formatTechnicalDate(data.serviceLast)}
+        </div>
+
+        <div class="technical-status">
+          ${serviceStatus.icon}
+          ${serviceStatus.text}
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="technical-card">
+
+      <div class="technical-icon">
+        <svg viewBox="0 0 56 56" aria-hidden="true">
+          <circle cx="28" cy="28" r="17" fill="none" stroke="currentColor" stroke-width="5"/>
+          <circle cx="28" cy="28" r="6" fill="none" stroke="currentColor" stroke-width="4"/>
+          <path d="M28 11v11M28 34v11M11 28h11M34 28h11" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <div class="technical-info">
+
+        <div class="technical-title">
+          Pneumatiky
+        </div>
+
+        <div class="technical-value">
+          ${data.tires || "Neuvedeno"}
+        </div>
+
+      </div>
+
+    </div>
+
+  `;
+}
+
+function formatTechnicalDate(value) {
+  if (!value) return "Neuvedeno";
+
+  const date = new Date(value);
+
+  if (isNaN(date.getTime())) {
+    return value;
+  }
+
+  return date.toLocaleDateString("cs-CZ");
+}
+
+function formatNumber(number) {
+
+  if (number === "" || number === null || number === undefined) {
+    return "";
+  }
+
+  return Number(number).toLocaleString("cs-CZ");
+
+}
+
+
+function getShortMonth(monthIndex) {
+
+  const months = [
+    "LED",
+    "ÚNO",
+    "BŘE",
+    "DUB",
+    "KVĚ",
+    "ČVN",
+    "ČVC",
+    "SRP",
+    "ZÁŘ",
+    "ŘÍJ",
+    "LIS",
+    "PRO"
+  ];
+
+  return months[monthIndex];
+
+}
+
+ 
+  showVehicleList();
+  
+   </script>
+
+<script id="service-photo-controls">
+function openServiceCamera() {
+  const input = document.getElementById("servicePhoto");
+  if (!input) return;
+  input.setAttribute("capture", "environment");
+  input.click();
+  setTimeout(function() { input.removeAttribute("capture"); }, 1000);
+}
+function openServiceGallery() {
+  const input = document.getElementById("servicePhoto");
+  if (!input) return;
+  input.removeAttribute("capture");
+  input.click();
+}
+document.addEventListener("change", function(e) {
+  if (e.target && e.target.id === "servicePhoto") {
+    const label = document.getElementById("servicePhotoName");
+    if (label && e.target.files && e.target.files.length) {
+      label.textContent = e.target.files[0].name;
+    }
+  }
+});
+</script>
+
+<script id="admin-login-modern-hook">
+document.addEventListener("DOMContentLoaded", function(){
+  function markAdminLogin(){
+    const selectors = [
+      "#adminLogin",
+      "#admin-login",
+      ".admin-login",
+      ".admin-login-card"
+    ];
+    selectors.forEach(function(sel){
+      document.querySelectorAll(sel).forEach(function(el){
+        el.classList.add("admin-login-modern");
+      });
+    });
+  }
+  markAdminLogin();
+  const observer = new MutationObserver(markAdminLogin);
+  observer.observe(document.body, {childList:true, subtree:true});
+});
+</script>
+
+
+
+
+<script id="admin-panel-modern-hook">
+(function(){
+  function markAdminPanel(){
+    const screen = document.getElementById("screen");
+    if(!screen) return;
+
+    const text = screen.textContent || "";
+    if(!text.includes("Administrátor")) return;
+
+    const cards = screen.querySelectorAll(".form-card");
+    if(!cards.length) return;
+
+    let first = cards[0];
+    let wrapper = first.closest(".admin-panel-modern");
+
+    if(!wrapper){
+      wrapper = document.createElement("div");
+      wrapper.className = "admin-panel-modern";
+      first.parentNode.insertBefore(wrapper, first);
+      cards.forEach(function(card){ wrapper.appendChild(card); });
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", markAdminPanel);
+  new MutationObserver(function(){ setTimeout(markAdminPanel, 0); })
+    .observe(document.body, {childList:true, subtree:true});
+})();
+</script>
+
+
+
+
+<script>
+function refreshServiceWarning(){
+  if (typeof google === 'undefined' || !google.script || !google.script.run) return;
+  google.script.run
+    .withSuccessHandler(function(reports){
+      var el = document.getElementById('serviceWarningMenu');
+      if (el) el.style.display = hasNewServiceReports(reports) ? 'inline-flex' : 'none';
+    })
+    .withFailureHandler(function(){})
+    .getAdminServiceReports();
+}
+document.addEventListener('DOMContentLoaded', refreshServiceWarning);
+</script>
+
+</body>
+</html>

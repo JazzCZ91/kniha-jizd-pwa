@@ -1297,6 +1297,131 @@ function serviceWarningHtml(reports){
 }
 </script>
 
+
+<script id="github-pages-gas-bridge">
+(function () {
+  // GitHub Pages nemá google.script.run. Tento most komunikuje
+  // s Google Apps Script Web App přes skryté iframe.
+  const API_URL = "https://script.google.com/macros/s/AKfycbxDEb7OYtzF1w3NoyXCG0mQTIY8uT_5o63MxQI1MoQPJ0YB82UgqgFG8r1s3A7MsXhd/exec";
+  const BRIDGE_URL = API_URL + "?bridge=1";
+  const GAS_ORIGIN = "https://script.google.com";
+  const PAGE_ORIGIN = window.location.origin;
+
+  let bridgeFrame = null;
+  let bridgeReady = false;
+  let callCounter = 0;
+  const pending = {};
+  const queue = [];
+
+  function createBridge() {
+    if (bridgeFrame) return;
+
+    bridgeFrame = document.createElement("iframe");
+    bridgeFrame.src = BRIDGE_URL;
+    bridgeFrame.style.display = "none";
+    bridgeFrame.setAttribute("aria-hidden", "true");
+    document.body.appendChild(bridgeFrame);
+  }
+
+  function postCall(item) {
+    if (!bridgeFrame || !bridgeFrame.contentWindow) {
+      queue.push(item);
+      return;
+    }
+
+    pending[item.id] = item;
+    bridgeFrame.contentWindow.postMessage({
+      type: "KNIHA_JIZD_BRIDGE_CALL",
+      id: item.id,
+      method: item.method,
+      args: item.args
+    }, GAS_ORIGIN);
+  }
+
+  window.addEventListener("message", function (event) {
+    if (event.origin !== GAS_ORIGIN) return;
+    if (!event.data) return;
+
+    if (event.data.type === "KNIHA_JIZD_BRIDGE_READY") {
+      bridgeReady = true;
+      while (queue.length) postCall(queue.shift());
+      return;
+    }
+
+    if (event.data.type !== "KNIHA_JIZD_BRIDGE_RESULT") return;
+
+    const item = pending[event.data.id];
+    if (!item) return;
+    delete pending[event.data.id];
+
+    if (event.data.success) {
+      if (typeof item.success === "function") item.success(event.data.data);
+    } else {
+      const error = new Error(event.data.error || "Neznámá chyba API.");
+      if (typeof item.failure === "function") item.failure(error);
+    }
+  });
+
+  function apiCall(method, args, success, failure) {
+    const item = {
+      id: "kj_" + Date.now() + "_" + (++callCounter),
+      method: String(method),
+      args: Array.isArray(args) ? args : [],
+      success: success,
+      failure: failure
+    };
+
+    createBridge();
+
+    if (bridgeReady) postCall(item);
+    else queue.push(item);
+  }
+
+  // Zachováme stejný způsob volání jako google.script.run,
+  // aby nebylo nutné přepisovat celou aplikaci.
+  const runner = {};
+  let successHandler = null;
+  let failureHandler = null;
+
+  runner.withSuccessHandler = function (fn) {
+    successHandler = fn;
+    return runner;
+  };
+
+  runner.withFailureHandler = function (fn) {
+    failureHandler = fn;
+    return runner;
+  };
+
+  const runnerProxy = new Proxy(runner, {
+    get: function (target, property) {
+      if (property in target) return target[property];
+
+      return function () {
+        const args = Array.prototype.slice.call(arguments);
+        const success = successHandler;
+        const failure = failureHandler;
+        successHandler = null;
+        failureHandler = null;
+        apiCall(property, args, success, failure);
+      };
+    }
+  });
+
+  // Pouze pokud jsme na GitHub Pages. V Apps Scriptu necháme
+  // nativní google.script.run beze změny.
+  if (!(window.google && window.google.script && window.google.script.run)) {
+    window.google = { script: { run: runnerProxy } };
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", createBridge);
+  } else {
+    createBridge();
+  }
+})();
+</script>
+
 <script>
 
     let currentVehicleName = "";

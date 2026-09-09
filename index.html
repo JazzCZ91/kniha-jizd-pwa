@@ -4523,7 +4523,77 @@ document.addEventListener('DOMContentLoaded', refreshServiceWarning);
 </script>
 
 <script>
-window.KNIHA_JIZD_API_URL = "https://script.google.com/macros/s/AKfycbxDEb7OYtzF1w3NoyXCG0mQTIY8uT_5o63MxQI1MoQPJ0YB82UgqgFG8r1s3A7MsXhd/exec";
+window.KNIHA_JIZD_API_URL = "https://script.google.com/macros/s/AKfycbyNpvK0ea1oKRBOkjCACkmQs3vROa877GMCxMlRtoE7aw9kACl5iO4Xu0JrBc4Afpbg/exec";
+
+/* GitHub Pages -> Google Apps Script bridge.
+   Zachovává stejné volání jako google.script.run, ale místo Apps Script
+   runtime používá JSONP přes nasazenou Web App URL. */
+(function(){
+  const API_URL = window.KNIHA_JIZD_API_URL;
+
+  function createRunner(successHandler, failureHandler){
+    return new Proxy({}, {
+      get: function(target, prop){
+        if (prop === "withSuccessHandler") {
+          return function(fn){
+            return createRunner(fn, failureHandler);
+          };
+        }
+        if (prop === "withFailureHandler") {
+          return function(fn){
+            return createRunner(successHandler, fn);
+          };
+        }
+        if (typeof prop !== "string") return undefined;
+
+        return function(){
+          const args = Array.prototype.slice.call(arguments);
+          const callbackName = "__knihaJizdCallback_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+          const script = document.createElement("script");
+          let finished = false;
+
+          function cleanup(){
+            if (finished) return;
+            finished = true;
+            try { delete window[callbackName]; } catch(e) { window[callbackName] = undefined; }
+            if (script.parentNode) script.parentNode.removeChild(script);
+          }
+
+          window[callbackName] = function(response){
+            cleanup();
+            if (response && response.success) {
+              if (typeof successHandler === "function") successHandler(response.data);
+            } else {
+              const error = new Error(response && response.error ? response.error : "Neznámá chyba Apps Script API.");
+              if (typeof failureHandler === "function") failureHandler(error);
+              else console.error(error);
+            }
+          };
+
+          const params = new URLSearchParams();
+          params.set("method", prop);
+          params.set("args", JSON.stringify(args));
+          params.set("callback", callbackName);
+
+          script.src = API_URL + "?" + params.toString();
+          script.async = true;
+          script.onerror = function(){
+            cleanup();
+            const error = new Error("Nepodařilo se spojit s Google Apps Script API.");
+            if (typeof failureHandler === "function") failureHandler(error);
+            else console.error(error);
+          };
+
+          document.head.appendChild(script);
+        };
+      }
+    });
+  }
+
+  window.google = window.google || {};
+  window.google.script = window.google.script || {};
+  window.google.script.run = createRunner(null, null);
+})();
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", function() {
     navigator.serviceWorker.register("./sw.js").catch(function(error) {

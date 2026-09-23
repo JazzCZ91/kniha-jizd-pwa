@@ -4602,11 +4602,7 @@ window.KNIHA_JIZD_API_URL = "https://script.google.com/macros/s/AKfycbyNpvK0ea1o
 
 /* Starý service worker může z GitHub Pages vracet předchozí verzi indexu.
    Pro API test ho záměrně nepoužíváme. */
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.getRegistrations().then(function(registrations){
-    registrations.forEach(function(registration){ registration.unregister(); });
-  }).catch(function(){});
-}
+
 </script>
 </body>
 </html>

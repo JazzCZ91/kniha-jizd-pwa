@@ -1309,34 +1309,21 @@ function serviceWarningHtml(reports){
     }
 
 
-   function loadVehicleList() {
+    function loadVehicleList() {
 
-  const container = document.getElementById("vehicleList");
+  const container =
+    document.getElementById("vehicleList");
 
   if (!container) {
-    console.error("❌ Nenalezen #vehicleList");
     return;
   }
 
-  container.innerHTML = `
-    <div class="empty-card">
-      ⏳ Připojuji se k API...
-    </div>
-  `;
-
-  console.log("KNIHA JIZD: spouštím getVehicles()");
-  console.log("KNIHA JIZD: API URL =", window.KNIHA_JIZD_API_URL);
 
   google.script.run
 
     .withSuccessHandler(function(vehicles) {
 
-      console.log(
-        "KNIHA JIZD: getVehicles OK",
-        vehicles
-      );
-
-      if (!vehicles || !vehicles.length) {
+      if (!vehicles || vehicles.length === 0) {
 
         container.innerHTML = `
           <div class="empty-card">
@@ -1347,44 +1334,58 @@ function serviceWarningHtml(reports){
         return;
       }
 
+
       container.innerHTML = "";
+
 
       vehicles.forEach(function(vehicle, index) {
 
         const vehicleId =
-          "vehicle-" +
-          index +
-          "-" +
-          String(vehicle.name || "")
-            .replace(/[^a-zA-Z0-9]/g, "");
+          "vehicle-km-" + index;
+
 
         const card =
           document.createElement("div");
 
-        card.className = "vehicle-card";
+        card.className =
+          "vehicle-card";
+
+
+        const vehicleImage = vehicle.imageUrl
+          ? `<img src="${vehicle.imageUrl}" alt="${vehicle.name}" loading="lazy">`
+          : `<svg class="vehicle-illustration" viewBox="0 0 520 240" role="img" aria-label="Dodávka ${vehicle.name}">
+              <defs><linearGradient id="vanBody${index}" x1="0" x2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#dbe5f1"/></linearGradient></defs>
+              <ellipse cx="265" cy="207" rx="190" ry="18" fill="#cbd5e1" opacity=".55"/>
+              <path d="M80 160 L92 82 Q96 57 123 52 L350 52 Q374 52 392 76 L437 127 Q446 138 447 160 L447 177 Q447 187 437 187 L102 187 Q80 187 80 160Z" fill="url(#vanBody${index})" stroke="#9aa9bb" stroke-width="4"/>
+              <path d="M356 65 L386 91 L414 126 L356 126Z" fill="#b9d0e8" stroke="#8da2b8" stroke-width="3"/>
+              <path d="M105 68 L337 68 L337 126 L99 126Z" fill="#cfe0ef"/>
+              <rect x="112" y="130" width="214" height="39" rx="5" fill="#f4f7fa" stroke="#d1dae5" stroke-width="2"/>
+              <path d="M338 130 L425 130 L438 164 L338 164Z" fill="#edf2f7" stroke="#cbd5e1" stroke-width="2"/>
+              <circle cx="150" cy="187" r="29" fill="#1f2937"/><circle cx="150" cy="187" r="14" fill="#94a3b8"/>
+              <circle cx="382" cy="187" r="29" fill="#1f2937"/><circle cx="382" cy="187" r="14" fill="#94a3b8"/>
+              <rect x="93" y="145" width="12" height="18" rx="4" fill="#f59e0b"/><rect x="428" y="145" width="10" height="18" rx="4" fill="#ef4444"/>
+              <text x="225" y="157" text-anchor="middle" font-family="Arial" font-size="16" font-weight="700" fill="#174a8b">VOLKSWAGEN</text>
+            </svg>`;
 
         card.innerHTML = `
-          <div class="vehicle-name">
-            ${vehicle.name || "Vozidlo"}
+          <div class="vehicle-photo">${vehicleImage}</div>
+          <div>
+            <div class="vehicle-name">${vehicle.name}</div>
+            <div class="vehicle-km-label">Poslední stav tachometru</div>
+            <div class="vehicle-km" id="${vehicleId}">Načítám...</div>
           </div>
-
-          <div class="vehicle-km-label">
-            Poslední stav tachometru
-          </div>
-
-          <div
-            class="vehicle-km"
-            id="${vehicleId}"
-          >
-            Načítám...
-          </div>
+          <div class="vehicle-warning" id="${vehicleId}-warning" style="display:none;" aria-label="Upozornění">⚠️</div>
         `;
 
         card.onclick = function() {
+
           showVehicle(vehicle.name);
+
         };
 
+
         container.appendChild(card);
+
 
         google.script.run
 
@@ -1394,8 +1395,26 @@ function serviceWarningHtml(reports){
               document.getElementById(vehicleId);
 
             if (kmElement) {
+
               kmElement.textContent =
                 formatNumber(lastKm) + " km";
+
+              google.script.run
+                .withSuccessHandler(function(status) {
+                  const warning = document.getElementById(vehicleId + "-warning");
+                  if (!warning || !status) return;
+                  const today = new Date();
+                  today.setHours(0,0,0,0);
+                  const needsAttention =
+                    (status.vignetteUntil && new Date(status.vignetteUntil) < today) ||
+                    (status.stkUntil && new Date(status.stkUntil) < today) ||
+                    (status.oilNextKm && Number(status.oilNextKm) < Number(lastKm)) ||
+                    (status.serviceNext && new Date(status.serviceNext) < today);
+                  warning.style.display = needsAttention ? "block" : "none";
+                })
+                .withFailureHandler(function() {})
+                .getTechnicalStatus(vehicle.name);
+
             }
 
           })
@@ -1406,12 +1425,14 @@ function serviceWarningHtml(reports){
               document.getElementById(vehicleId);
 
             if (kmElement) {
+
               kmElement.textContent =
                 "Nelze načíst";
+
             }
 
             console.error(
-              "Chyba KM:",
+              "Chyba KM vozidla:",
               vehicle.name,
               error
             );
@@ -1426,19 +1447,16 @@ function serviceWarningHtml(reports){
 
     .withFailureHandler(function(error) {
 
-      console.error(
-        "❌ KNIHA JIZD: getVehicles CHYBA",
-        error
-      );
-
       container.innerHTML = `
         <div class="empty-card">
-          ❌ API chyba:<br>
-          ${error && error.message
-            ? error.message
-            : String(error)}
+          ❌ Vozidla se nepodařilo načíst.
         </div>
       `;
+
+      console.error(
+        "Chyba při načítání vozidel:",
+        error
+      );
 
     })
 
@@ -4507,71 +4525,72 @@ document.addEventListener('DOMContentLoaded', refreshServiceWarning);
 <script>
 window.KNIHA_JIZD_API_URL = "https://script.google.com/macros/s/AKfycbyNpvK0ea1oKRBOkjCACkmQs3vROa877GMCxMlRtoE7aw9kACl5iO4Xu0JrBc4Afpbg/exec";
 
-/* GitHub Pages -> Google Apps Script API bridge.
-   Všechny volání zůstávají ve tvaru google.script.run.xxx(),
-   ale na GitHub Pages se posílají jako JSONP GET požadavky. */
-(function(){
-  const API_URL = window.KNIHA_JIZD_API_URL;
+/* GitHub Pages -> Google Apps Script API bridge */
+(function () {
+  var API_URL = window.KNIHA_JIZD_API_URL;
 
-  function createRunner(successHandler, failureHandler){
+  function createRunner(successHandler, failureHandler) {
     return new Proxy({}, {
-      get: function(target, prop){
+      get: function (target, prop) {
         if (prop === "withSuccessHandler") {
-          return function(fn){ return createRunner(fn, failureHandler); };
+          return function (fn) {
+            return createRunner(fn, failureHandler);
+          };
         }
         if (prop === "withFailureHandler") {
-          return function(fn){ return createRunner(successHandler, fn); };
+          return function (fn) {
+            return createRunner(successHandler, fn);
+          };
         }
         if (typeof prop !== "string") return undefined;
 
-        return function(){
-          const args = Array.prototype.slice.call(arguments);
-          const callbackName = "__knihaJizdCallback_" + Date.now() + "_" + Math.random().toString(36).slice(2);
-          const script = document.createElement("script");
-          let finished = false;
+        return function () {
+          var args = Array.prototype.slice.call(arguments);
+          var callbackName =
+            "__knihaJizdCallback_" + Date.now() + "_" +
+            Math.random().toString(36).slice(2);
+          var script = document.createElement("script");
+          var finished = false;
 
-          function fail(message){
-            cleanup();
-            const error = new Error(message || "Neznámá chyba Apps Script API.");
-            if (typeof failureHandler === "function") failureHandler(error);
-            else console.error(error);
-          }
-
-          function cleanup(){
+          function finish() {
             if (finished) return;
             finished = true;
-            try { delete window[callbackName]; } catch(e) { window[callbackName] = undefined; }
+            try { delete window[callbackName]; } catch (e) {
+              window[callbackName] = undefined;
+            }
             if (script.parentNode) script.parentNode.removeChild(script);
           }
 
-          window[callbackName] = function(response){
-            if (response && response.success) {
-              cleanup();
+          window[callbackName] = function (response) {
+            finish();
+            if (response && response.success === true) {
               if (typeof successHandler === "function") successHandler(response.data);
               return;
             }
-            fail(response && response.error ? response.error : "Neznámá chyba Apps Script API.");
+            var error = new Error(
+              response && response.error
+                ? response.error
+                : "Neznámá chyba Google Apps Script API."
+            );
+            if (typeof failureHandler === "function") failureHandler(error);
+            else console.error("API chyba:", error);
           };
 
-          const params = new URLSearchParams();
-          params.set("method", prop);
-          params.set("args", JSON.stringify(args));
-          params.set("callback", callbackName);
-          params.set("_", String(Date.now()));
+          script.onerror = function () {
+            finish();
+            var error = new Error("Nepodařilo se spojit s Google Apps Script API.");
+            if (typeof failureHandler === "function") failureHandler(error);
+            else console.error(error);
+          };
 
-          script.src = API_URL + "?" + params.toString();
+          script.src =
+            API_URL +
+            "?method=" + encodeURIComponent(prop) +
+            "&args=" + encodeURIComponent(JSON.stringify(args)) +
+            "&callback=" + encodeURIComponent(callbackName) +
+            "&_=" + Date.now();
           script.async = true;
-          script.onerror = function(){
-            fail("Nepodařilo se spojit s Google Apps Script API.");
-          };
-
           document.head.appendChild(script);
-
-          // Když Google vrátí HTML/chybovou stránku místo JSONP,
-          // nenecháme aplikaci viset na „Načítám...“ navždy.
-          setTimeout(function(){
-            if (!finished) fail("Apps Script API neodpovědělo v časovém limitu.");
-          }, 15000);
         };
       }
     });
@@ -4581,10 +4600,6 @@ window.KNIHA_JIZD_API_URL = "https://script.google.com/macros/s/AKfycbyNpvK0ea1o
   window.google.script = window.google.script || {};
   window.google.script.run = createRunner(null, null);
 })();
-
-/* Starý service worker může z GitHub Pages vracet předchozí verzi indexu.
-   Pro API test ho záměrně nepoužíváme. */
-
 </script>
 </body>
 </html>

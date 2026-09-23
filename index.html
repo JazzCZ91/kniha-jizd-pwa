@@ -1309,21 +1309,34 @@ function serviceWarningHtml(reports){
     }
 
 
-    function loadVehicleList() {
+   function loadVehicleList() {
 
-  const container =
-    document.getElementById("vehicleList");
+  const container = document.getElementById("vehicleList");
 
   if (!container) {
+    console.error("❌ Nenalezen #vehicleList");
     return;
   }
 
+  container.innerHTML = `
+    <div class="empty-card">
+      ⏳ Připojuji se k API...
+    </div>
+  `;
+
+  console.log("KNIHA JIZD: spouštím getVehicles()");
+  console.log("KNIHA JIZD: API URL =", window.KNIHA_JIZD_API_URL);
 
   google.script.run
 
     .withSuccessHandler(function(vehicles) {
 
-      if (!vehicles || vehicles.length === 0) {
+      console.log(
+        "KNIHA JIZD: getVehicles OK",
+        vehicles
+      );
+
+      if (!vehicles || !vehicles.length) {
 
         container.innerHTML = `
           <div class="empty-card">
@@ -1334,58 +1347,44 @@ function serviceWarningHtml(reports){
         return;
       }
 
-
       container.innerHTML = "";
-
 
       vehicles.forEach(function(vehicle, index) {
 
         const vehicleId =
-          "vehicle-km-" + index;
-
+          "vehicle-" +
+          index +
+          "-" +
+          String(vehicle.name || "")
+            .replace(/[^a-zA-Z0-9]/g, "");
 
         const card =
           document.createElement("div");
 
-        card.className =
-          "vehicle-card";
-
-
-        const vehicleImage = vehicle.imageUrl
-          ? `<img src="${vehicle.imageUrl}" alt="${vehicle.name}" loading="lazy">`
-          : `<svg class="vehicle-illustration" viewBox="0 0 520 240" role="img" aria-label="Dodávka ${vehicle.name}">
-              <defs><linearGradient id="vanBody${index}" x1="0" x2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#dbe5f1"/></linearGradient></defs>
-              <ellipse cx="265" cy="207" rx="190" ry="18" fill="#cbd5e1" opacity=".55"/>
-              <path d="M80 160 L92 82 Q96 57 123 52 L350 52 Q374 52 392 76 L437 127 Q446 138 447 160 L447 177 Q447 187 437 187 L102 187 Q80 187 80 160Z" fill="url(#vanBody${index})" stroke="#9aa9bb" stroke-width="4"/>
-              <path d="M356 65 L386 91 L414 126 L356 126Z" fill="#b9d0e8" stroke="#8da2b8" stroke-width="3"/>
-              <path d="M105 68 L337 68 L337 126 L99 126Z" fill="#cfe0ef"/>
-              <rect x="112" y="130" width="214" height="39" rx="5" fill="#f4f7fa" stroke="#d1dae5" stroke-width="2"/>
-              <path d="M338 130 L425 130 L438 164 L338 164Z" fill="#edf2f7" stroke="#cbd5e1" stroke-width="2"/>
-              <circle cx="150" cy="187" r="29" fill="#1f2937"/><circle cx="150" cy="187" r="14" fill="#94a3b8"/>
-              <circle cx="382" cy="187" r="29" fill="#1f2937"/><circle cx="382" cy="187" r="14" fill="#94a3b8"/>
-              <rect x="93" y="145" width="12" height="18" rx="4" fill="#f59e0b"/><rect x="428" y="145" width="10" height="18" rx="4" fill="#ef4444"/>
-              <text x="225" y="157" text-anchor="middle" font-family="Arial" font-size="16" font-weight="700" fill="#174a8b">VOLKSWAGEN</text>
-            </svg>`;
+        card.className = "vehicle-card";
 
         card.innerHTML = `
-          <div class="vehicle-photo">${vehicleImage}</div>
-          <div>
-            <div class="vehicle-name">${vehicle.name}</div>
-            <div class="vehicle-km-label">Poslední stav tachometru</div>
-            <div class="vehicle-km" id="${vehicleId}">Načítám...</div>
+          <div class="vehicle-name">
+            ${vehicle.name || "Vozidlo"}
           </div>
-          <div class="vehicle-warning" id="${vehicleId}-warning" style="display:none;" aria-label="Upozornění">⚠️</div>
+
+          <div class="vehicle-km-label">
+            Poslední stav tachometru
+          </div>
+
+          <div
+            class="vehicle-km"
+            id="${vehicleId}"
+          >
+            Načítám...
+          </div>
         `;
 
         card.onclick = function() {
-
           showVehicle(vehicle.name);
-
         };
 
-
         container.appendChild(card);
-
 
         google.script.run
 
@@ -1395,26 +1394,8 @@ function serviceWarningHtml(reports){
               document.getElementById(vehicleId);
 
             if (kmElement) {
-
               kmElement.textContent =
                 formatNumber(lastKm) + " km";
-
-              google.script.run
-                .withSuccessHandler(function(status) {
-                  const warning = document.getElementById(vehicleId + "-warning");
-                  if (!warning || !status) return;
-                  const today = new Date();
-                  today.setHours(0,0,0,0);
-                  const needsAttention =
-                    (status.vignetteUntil && new Date(status.vignetteUntil) < today) ||
-                    (status.stkUntil && new Date(status.stkUntil) < today) ||
-                    (status.oilNextKm && Number(status.oilNextKm) < Number(lastKm)) ||
-                    (status.serviceNext && new Date(status.serviceNext) < today);
-                  warning.style.display = needsAttention ? "block" : "none";
-                })
-                .withFailureHandler(function() {})
-                .getTechnicalStatus(vehicle.name);
-
             }
 
           })
@@ -1425,14 +1406,12 @@ function serviceWarningHtml(reports){
               document.getElementById(vehicleId);
 
             if (kmElement) {
-
               kmElement.textContent =
                 "Nelze načíst";
-
             }
 
             console.error(
-              "Chyba KM vozidla:",
+              "Chyba KM:",
               vehicle.name,
               error
             );
@@ -1447,16 +1426,19 @@ function serviceWarningHtml(reports){
 
     .withFailureHandler(function(error) {
 
-      container.innerHTML = `
-        <div class="empty-card">
-          ❌ Vozidla se nepodařilo načíst.
-        </div>
-      `;
-
       console.error(
-        "Chyba při načítání vozidel:",
+        "❌ KNIHA JIZD: getVehicles CHYBA",
         error
       );
+
+      container.innerHTML = `
+        <div class="empty-card">
+          ❌ API chyba:<br>
+          ${error && error.message
+            ? error.message
+            : String(error)}
+        </div>
+      `;
 
     })
 

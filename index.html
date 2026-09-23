@@ -4525,26 +4525,11 @@ document.addEventListener('DOMContentLoaded', refreshServiceWarning);
 <script>
 window.KNIHA_JIZD_API_URL = "https://script.google.com/macros/s/AKfycbyNpvK0ea1oKRBOkjCACkmQs3vROa877GMCxMlRtoE7aw9kACl5iO4Xu0JrBc4Afpbg/exec";
 
-/* GitHub Pages -> Google Apps Script bridge.
-   Čtení používá JSONP přes GET. Zápis používá POST přes skrytý iframe.
-   API rozhraní tím zůstává stejné jako google.script.run. */
+/* GitHub Pages -> Google Apps Script API bridge.
+   Všechny volání zůstávají ve tvaru google.script.run.xxx(),
+   ale na GitHub Pages se posílají jako JSONP GET požadavky. */
 (function(){
   const API_URL = window.KNIHA_JIZD_API_URL;
-
-  const WRITE_METHODS = new Set([
-    "saveNewTrip",
-    "updateAdminVehicle",
-    "saveFuelCard",
-    "deactivateFuelCard",
-    "activateFuelCard",
-    "saveServiceReport",
-    "authorizeDrive",
-    "updateServiceReportStatus",
-    "deleteServiceReport",
-    "setAdminPassword",
-    "syncFuelCardsFromVehicles",
-    "restoreDayKmFormulasAllVehicles"
-  ]);
 
   function createRunner(successHandler, failureHandler){
     return new Proxy({}, {
@@ -4559,103 +4544,55 @@ window.KNIHA_JIZD_API_URL = "https://script.google.com/macros/s/AKfycbyNpvK0ea1o
 
         return function(){
           const args = Array.prototype.slice.call(arguments);
-          callApi(prop, args, successHandler, failureHandler);
-          return window.google.script.run;
+          const callbackName = "__knihaJizdCallback_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+          const script = document.createElement("script");
+          let finished = false;
+
+          function fail(message){
+            cleanup();
+            const error = new Error(message || "Neznámá chyba Apps Script API.");
+            if (typeof failureHandler === "function") failureHandler(error);
+            else console.error(error);
+          }
+
+          function cleanup(){
+            if (finished) return;
+            finished = true;
+            try { delete window[callbackName]; } catch(e) { window[callbackName] = undefined; }
+            if (script.parentNode) script.parentNode.removeChild(script);
+          }
+
+          window[callbackName] = function(response){
+            if (response && response.success) {
+              cleanup();
+              if (typeof successHandler === "function") successHandler(response.data);
+              return;
+            }
+            fail(response && response.error ? response.error : "Neznámá chyba Apps Script API.");
+          };
+
+          const params = new URLSearchParams();
+          params.set("method", prop);
+          params.set("args", JSON.stringify(args));
+          params.set("callback", callbackName);
+          params.set("_", String(Date.now()));
+
+          script.src = API_URL + "?" + params.toString();
+          script.async = true;
+          script.onerror = function(){
+            fail("Nepodařilo se spojit s Google Apps Script API.");
+          };
+
+          document.head.appendChild(script);
+
+          // Když Google vrátí HTML/chybovou stránku místo JSONP,
+          // nenecháme aplikaci viset na „Načítám...“ navždy.
+          setTimeout(function(){
+            if (!finished) fail("Apps Script API neodpovědělo v časovém limitu.");
+          }, 15000);
         };
       }
     });
-  }
-
-  function callApi(method, args, success, failure){
-    if (WRITE_METHODS.has(method)) {
-      callPost(method, args, success, failure);
-    } else {
-      callJsonp(method, args, success, failure);
-    }
-  }
-
-  function callJsonp(method, args, success, failure){
-    const callbackName = "__knihaJizdCallback_" + Date.now() + "_" + Math.random().toString(36).slice(2);
-    const script = document.createElement("script");
-    let finished = false;
-
-    function cleanup(){
-      if (finished) return;
-      finished = true;
-      try { delete window[callbackName]; } catch(e) { window[callbackName] = undefined; }
-      if (script.parentNode) script.parentNode.removeChild(script);
-    }
-
-    window[callbackName] = function(response){
-      cleanup();
-      if (response && response.success) {
-        if (typeof success === "function") success(response.data);
-      } else {
-        const error = new Error(response && response.error ? response.error : "Neznámá chyba Apps Script API.");
-        if (typeof failure === "function") failure(error); else console.error(error);
-      }
-    };
-
-    const params = new URLSearchParams();
-    params.set("api", "1");
-    params.set("method", method);
-    params.set("args", JSON.stringify(args));
-    params.set("callback", callbackName);
-
-    script.src = API_URL + "?" + params.toString();
-    script.async = true;
-    script.onerror = function(){
-      cleanup();
-      const error = new Error("Nepodařilo se spojit s Google Apps Script API.");
-      if (typeof failure === "function") failure(error); else console.error(error);
-    };
-
-    document.head.appendChild(script);
-  }
-
-  function callPost(method, args, success, failure){
-    const iframeName = "__knihaJizdPost_" + Date.now() + "_" + Math.random().toString(36).slice(2);
-    const iframe = document.createElement("iframe");
-    iframe.name = iframeName;
-    iframe.style.display = "none";
-    document.body.appendChild(iframe);
-
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = API_URL;
-    form.target = iframeName;
-    form.style.display = "none";
-
-    const field = document.createElement("input");
-    field.type = "hidden";
-    field.name = "payload";
-    field.value = JSON.stringify({method: method, args: args});
-    form.appendChild(field);
-    document.body.appendChild(form);
-
-    let done = false;
-    const finish = function(ok, value){
-      if(done) return;
-      done = true;
-      setTimeout(function(){
-        if(form.parentNode) form.parentNode.removeChild(form);
-        if(iframe.parentNode) iframe.parentNode.removeChild(iframe);
-      }, 1000);
-      if(ok){ if(typeof success === "function") success(value); }
-      else { if(typeof failure === "function") failure(value); }
-    };
-
-    iframe.onload = function(){
-      /* Cross-origin iframe nelze přečíst. Úspěch proto oznámíme po odeslání.
-         Samotný Apps Script zápis proběhne na serveru. */
-      setTimeout(function(){ finish(true, {success:true}); }, 350);
-    };
-
-    try {
-      form.submit();
-    } catch(e) {
-      finish(false, e);
-    }
   }
 
   window.google = window.google || {};
@@ -4663,12 +4600,12 @@ window.KNIHA_JIZD_API_URL = "https://script.google.com/macros/s/AKfycbyNpvK0ea1o
   window.google.script.run = createRunner(null, null);
 })();
 
+/* Starý service worker může z GitHub Pages vracet předchozí verzi indexu.
+   Pro API test ho záměrně nepoužíváme. */
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", function() {
-    navigator.serviceWorker.register("./sw.js").catch(function(error) {
-      console.warn("PWA service worker se nepodařilo zaregistrovat:", error);
-    });
-  });
+  navigator.serviceWorker.getRegistrations().then(function(registrations){
+    registrations.forEach(function(registration){ registration.unregister(); });
+  }).catch(function(){});
 }
 </script>
 </body>
